@@ -9,19 +9,13 @@ import { ScrapersModule } from './scrapers/scrapers.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { User } from './entities/user.entity';
-import { Store } from './entities/store.entity';
-import { TrackedItem } from './entities/tracked-item.entity';
-import { PriceHistory } from './entities/price-history.entity';
-import { PriceAlert } from './entities/price-alert.entity';
-import { Notification } from './entities/notification.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'justtrack it.db',
-      entities: [User, Store, TrackedItem, PriceHistory, PriceAlert, Notification],
+      autoLoadEntities: true,
       synchronize: true, // Auto-sync schema (solo in dev)
       logging: false,
     }),

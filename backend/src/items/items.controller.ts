@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ParseIntPipe,
   ValidationPipe,
   UseGuards,
   Request,
@@ -40,13 +39,13 @@ export class ItemsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  findOne(@Param('id') id: string, @Request() req) {
     return this.itemsService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ValidationPipe()) updateItemDto: UpdateItemDto,
     @Request() req,
   ) {
@@ -54,7 +53,7 @@ export class ItemsController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  remove(@Param('id') id: string, @Request() req) {
     return this.itemsService.remove(id, req.user.id);
   }
 
@@ -82,23 +81,23 @@ export class ItemsController {
   }
 
   @Get('tracked/:id')
-  findOneTrackedItem(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  findOneTrackedItem(@Param('id') id: string, @Request() req) {
     return this.itemsService.findOneTrackedItem(id, req.user.id);
   }
 
   @Get('tracked/:id/history')
-  getPriceHistory(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  getPriceHistory(@Param('id') id: string, @Request() req) {
     return this.itemsService.getPriceHistory(id, req.user.id);
   }
 
   @Post('tracked/:id/refresh')
-  refreshPrice(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  refreshPrice(@Param('id') id: string, @Request() req) {
     return this.itemsService.refreshPrice(id, req.user.id);
   }
 
   @Patch('tracked/:id')
   updateTrackedItem(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ValidationPipe()) dto: UpdateTrackedItemDto,
     @Request() req,
   ) {
@@ -106,7 +105,7 @@ export class ItemsController {
   }
 
   @Delete('tracked/:id')
-  removeTrackedItem(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  removeTrackedItem(@Param('id') id: string, @Request() req) {
     return this.itemsService.removeTrackedItem(id, req.user.id);
   }
 }

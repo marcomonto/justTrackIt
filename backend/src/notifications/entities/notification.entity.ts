@@ -6,9 +6,9 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { User } from './user.entity';
-import { PriceAlert } from './price-alert.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { User } from '../../auth/entities/user.entity';
+import { PriceAlert } from '../../alerts/entities/price-alert.entity';
 
 @Entity('notifications')
 @Index(['userId', 'status'])

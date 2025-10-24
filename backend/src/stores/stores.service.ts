@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Store } from '../entities/store.entity';
+import { Store } from './entities/store.entity';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 
@@ -25,7 +25,7 @@ export class StoresService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const store = await this.storeRepository.findOne({
       where: { id },
       relations: ['trackedItems'],
@@ -50,14 +50,14 @@ export class StoresService {
     });
   }
 
-  async update(id: number, updateStoreDto: UpdateStoreDto) {
+  async update(id: string, updateStoreDto: UpdateStoreDto) {
     await this.findOne(id); // Check if exists
 
     await this.storeRepository.update(id, updateStoreDto);
     return this.findOne(id);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.findOne(id); // Check if exists
 
     await this.storeRepository.delete(id);

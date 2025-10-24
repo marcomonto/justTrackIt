@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { TrackedItem } from '../entities/tracked-item.entity';
-import { PriceHistory } from '../entities/price-history.entity';
-import { PriceAlert } from '../entities/price-alert.entity';
-import { Notification } from '../entities/notification.entity';
+import { TrackedItem } from '../items/entities/tracked-item.entity';
+import { PriceHistory } from '../items/entities/price-history.entity';
+import { PriceAlert } from '../alerts/entities/price-alert.entity';
+import { Notification } from '../notifications/entities/notification.entity';
 import { ScrapersService } from '../scrapers/scrapers.service';
 
 @Injectable()
@@ -65,7 +65,7 @@ export class SchedulerService {
     }
   }
 
-  async checkItemPrice(itemId: number) {
+  async checkItemPrice(itemId: string) {
     const item = await this.trackedItemRepository.findOne({
       where: { id: itemId },
       relations: ['store'],
@@ -119,7 +119,7 @@ export class SchedulerService {
   }
 
   private async checkPriceAlerts(
-    itemId: number,
+    itemId: string,
     oldPrice: number,
     newPrice: number,
   ) {

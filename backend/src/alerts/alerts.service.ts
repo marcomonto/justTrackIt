@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PriceAlert } from '../entities/price-alert.entity';
-import { TrackedItem } from '../entities/tracked-item.entity';
+import { PriceAlert } from './entities/price-alert.entity';
+import { TrackedItem } from '../items/entities/tracked-item.entity';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { UpdateAlertDto } from './dto/update-alert.dto';
 
@@ -20,7 +20,7 @@ export class AlertsService {
     private trackedItemRepository: Repository<TrackedItem>,
   ) {}
 
-  async create(createAlertDto: CreateAlertDto, userId: number) {
+  async create(createAlertDto: CreateAlertDto, userId: string) {
     // Verify item belongs to user
     const item = await this.trackedItemRepository.findOne({
       where: { id: createAlertDto.itemId },
@@ -57,7 +57,7 @@ export class AlertsService {
     });
   }
 
-  async findAll(userId: number, activeOnly = false) {
+  async findAll(userId: string, activeOnly = false) {
     const where: any = { userId };
     if (activeOnly) {
       where.isActive = true;
@@ -70,7 +70,7 @@ export class AlertsService {
     });
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: string, userId: string) {
     const alert = await this.alertRepository.findOne({
       where: { id },
       relations: ['item', 'item.store', 'notifications'],
@@ -89,20 +89,20 @@ export class AlertsService {
     return alert;
   }
 
-  async update(id: number, updateAlertDto: UpdateAlertDto, userId: number) {
+  async update(id: string, updateAlertDto: UpdateAlertDto, userId: string) {
     await this.findOne(id, userId);
 
     await this.alertRepository.update(id, updateAlertDto);
     return this.findOne(id, userId);
   }
 
-  async remove(id: number, userId: number) {
+  async remove(id: string, userId: string) {
     await this.findOne(id, userId);
 
     await this.alertRepository.delete(id);
   }
 
-  async findByItem(itemId: number, userId: number) {
+  async findByItem(itemId: string, userId: string) {
     // Verify item belongs to user
     const item = await this.trackedItemRepository.findOne({
       where: { id: itemId },

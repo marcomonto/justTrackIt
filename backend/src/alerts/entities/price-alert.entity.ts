@@ -6,10 +6,10 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { User } from './user.entity';
-import { TrackedItem } from './tracked-item.entity';
-import { Notification } from './notification.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { User } from '../../auth/entities/user.entity';
+import { TrackedItem } from '../../items/entities/tracked-item.entity';
+import { Notification } from '../../notifications/entities/notification.entity';
 
 @Entity('price_alerts')
 @Index(['itemId', 'isActive'])

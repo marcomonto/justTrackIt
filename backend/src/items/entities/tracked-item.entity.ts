@@ -6,11 +6,11 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { User } from './user.entity';
-import { Store } from './store.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { User } from '../../auth/entities/user.entity';
+import { Store } from '../../stores/entities/store.entity';
 import { PriceHistory } from './price-history.entity';
-import { PriceAlert } from './price-alert.entity';
+import { PriceAlert } from '../../alerts/entities/price-alert.entity';
 
 @Entity('tracked_items')
 export class TrackedItem extends BaseEntity {

@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Query,
   UseGuards,
   Request,
@@ -27,7 +26,7 @@ export class NotificationsController {
   }
 
   @Get(':id/read')
-  markAsRead(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  markAsRead(@Param('id') id: string, @Request() req) {
     return this.notificationsService.markAsRead(id, req.user.id);
   }
 }

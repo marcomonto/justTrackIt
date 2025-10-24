@@ -1,12 +1,12 @@
-import { IsString, IsOptional, IsNumber, IsUrl, IsInt, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsUrl, IsBoolean } from 'class-validator';
 
 export class CreateTrackedItemDto {
   @IsUrl()
   productUrl: string;
 
   @IsOptional()
-  @IsInt()
-  storeId?: number; // If not provided, will be auto-detected from URL
+  @IsString()
+  storeId?: string; // If not provided, will be auto-detected from URL
 
   @IsOptional()
   @IsNumber()

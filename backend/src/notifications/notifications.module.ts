@@ -5,9 +5,9 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
-import { Notification } from '../entities/notification.entity';
-import { User } from '../entities/user.entity';
-import { PriceAlert } from '../entities/price-alert.entity';
+import { Notification } from './entities/notification.entity';
+import { User } from '../auth/entities/user.entity';
+import { PriceAlert } from '../alerts/entities/price-alert.entity';
 
 @Module({
   imports: [

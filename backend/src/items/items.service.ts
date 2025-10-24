@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TrackedItem } from '../entities/tracked-item.entity';
-import { PriceHistory } from '../entities/price-history.entity';
+import { TrackedItem } from './entities/tracked-item.entity';
+import { PriceHistory } from './entities/price-history.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { CreateTrackedItemDto } from './dto/create-tracked-item.dto';
@@ -23,39 +23,39 @@ export class ItemsService {
 
   // Legacy methods - replaced by TrackedItems
   // Kept for backward compatibility but not actively used
-  async create(createItemDto: CreateItemDto, userId: number) {
+  async create(createItemDto: CreateItemDto, userId: string) {
     // Deprecated: Use createTrackedItem instead
     throw new BadRequestException('Use POST /api/items/tracked to create tracked items');
   }
 
-  async findAll(userId: number, filter?: string) {
+  async findAll(userId: string, filter?: string) {
     // Deprecated: Use findAllTrackedItems instead
     return this.findAllTrackedItems(userId, filter as any);
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: string, userId: string) {
     // Deprecated: Use findOneTrackedItem instead
     return this.findOneTrackedItem(id, userId);
   }
 
-  async update(id: number, updateItemDto: UpdateItemDto, userId: number) {
+  async update(id: string, updateItemDto: UpdateItemDto, userId: string) {
     // Deprecated: Use updateTrackedItem instead
     throw new BadRequestException('Use PATCH /api/items/tracked/:id to update tracked items');
   }
 
-  async remove(id: number, userId: number) {
+  async remove(id: string, userId: string) {
     // Deprecated: Use removeTrackedItem instead
     return this.removeTrackedItem(id, userId);
   }
 
-  async getStats(userId: number) {
+  async getStats(userId: string) {
     // Deprecated: Use getTrackedItemsStats instead
     return this.getTrackedItemsStats(userId);
   }
 
   // ==================== TRACKED ITEMS (Price Tracking) ====================
 
-  async createTrackedItem(dto: CreateTrackedItemDto, userId: number) {
+  async createTrackedItem(dto: CreateTrackedItemDto, userId: string) {
     // 1. Detect store from URL
     let store = await this.storesService.getStoreFromUrl(dto.productUrl);
 
@@ -108,7 +108,7 @@ export class ItemsService {
     });
   }
 
-  async findAllTrackedItems(userId: number, filter?: 'tracking' | 'paused' | 'purchased') {
+  async findAllTrackedItems(userId: string, filter?: 'tracking' | 'paused' | 'purchased') {
     const where: any = { userId };
 
     if (filter) {
@@ -130,7 +130,7 @@ export class ItemsService {
     return qb.getMany();
   }
 
-  async findOneTrackedItem(id: number, userId: number) {
+  async findOneTrackedItem(id: string, userId: string) {
     const item = await this.trackedItemRepository
       .createQueryBuilder('item')
       .leftJoinAndSelect('item.store', 'store')
@@ -152,7 +152,7 @@ export class ItemsService {
     return item;
   }
 
-  async updateTrackedItem(id: number, dto: UpdateTrackedItemDto, userId: number) {
+  async updateTrackedItem(id: string, dto: UpdateTrackedItemDto, userId: string) {
     await this.findOneTrackedItem(id, userId);
 
     await this.trackedItemRepository.update(id, dto);
@@ -163,13 +163,13 @@ export class ItemsService {
     });
   }
 
-  async removeTrackedItem(id: number, userId: number) {
+  async removeTrackedItem(id: string, userId: string) {
     await this.findOneTrackedItem(id, userId);
 
     await this.trackedItemRepository.delete(id);
   }
 
-  async refreshPrice(id: number, userId: number) {
+  async refreshPrice(id: string, userId: string) {
     const item = await this.findOneTrackedItem(id, userId);
 
     // Scrape current price
@@ -192,7 +192,7 @@ export class ItemsService {
     return updatedItem;
   }
 
-  async getPriceHistory(id: number, userId: number) {
+  async getPriceHistory(id: string, userId: string) {
     await this.findOneTrackedItem(id, userId);
 
     return this.priceHistoryRepository.find({
@@ -201,7 +201,7 @@ export class ItemsService {
     });
   }
 
-  async getTrackedItemsStats(userId: number) {
+  async getTrackedItemsStats(userId: string) {
     const total = await this.trackedItemRepository.count({
       where: { userId },
     });

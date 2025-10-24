@@ -1,6 +1,6 @@
 import { Entity, Column, OneToMany, Index } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { TrackedItem } from './tracked-item.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { TrackedItem } from '../../items/entities/tracked-item.entity';
 
 @Entity('stores')
 export class Store extends BaseEntity {

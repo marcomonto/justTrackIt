@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
-import { Notification } from '../entities/notification.entity';
-import { User } from '../entities/user.entity';
-import { PriceAlert } from '../entities/price-alert.entity';
+import { Notification } from './entities/notification.entity';
+import { User } from '../auth/entities/user.entity';
+import { PriceAlert } from '../alerts/entities/price-alert.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
@@ -99,7 +99,7 @@ export class NotificationsService {
     }
   }
 
-  async findAll(userId: number, limit = 50) {
+  async findAll(userId: string, limit = 50) {
     return this.notificationRepository.find({
       where: { userId },
       order: { createdAt: 'DESC' },
@@ -108,7 +108,7 @@ export class NotificationsService {
     });
   }
 
-  async markAsRead(id: number, userId: number) {
+  async markAsRead(id: string, userId: string) {
     const notification = await this.notificationRepository.findOne({
       where: { id },
     });
@@ -122,7 +122,7 @@ export class NotificationsService {
     return notification;
   }
 
-  async getUnreadCount(userId: number) {
+  async getUnreadCount(userId: string) {
     return this.notificationRepository.count({
       where: {
         userId,

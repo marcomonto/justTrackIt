@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm';
-import { Store } from '../src/entities/store.entity';
-import { User } from '../src/entities/user.entity';
-import { TrackedItem } from '../src/entities/tracked-item.entity';
-import { PriceHistory } from '../src/entities/price-history.entity';
-import { PriceAlert } from '../src/entities/price-alert.entity';
-import { Notification } from '../src/entities/notification.entity';
+import { Store } from '../src/stores/entities/store.entity';
+import { User } from '../src/auth/entities/user.entity';
+import { TrackedItem } from '../src/items/entities/tracked-item.entity';
+import { PriceHistory } from '../src/items/entities/price-history.entity';
+import { PriceAlert } from '../src/alerts/entities/price-alert.entity';
+import { Notification } from '../src/notifications/entities/notification.entity';
 
 const AppDataSource = new DataSource({
   type: 'sqlite',

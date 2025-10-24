@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   Query,
   UseGuards,
   Request,
@@ -36,18 +35,18 @@ export class AlertsController {
   }
 
   @Get('item/:itemId')
-  findByItem(@Param('itemId', ParseIntPipe) itemId: number, @Request() req) {
+  findByItem(@Param('itemId') itemId: string, @Request() req) {
     return this.alertsService.findByItem(itemId, req.user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  findOne(@Param('id') id: string, @Request() req) {
     return this.alertsService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ValidationPipe()) updateAlertDto: UpdateAlertDto,
     @Request() req,
   ) {
@@ -55,7 +54,7 @@ export class AlertsController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  remove(@Param('id') id: string, @Request() req) {
     return this.alertsService.remove(id, req.user.id);
   }
 }
