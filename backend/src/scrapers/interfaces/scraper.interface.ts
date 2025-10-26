@@ -1,6 +1,16 @@
+/**
+ * Supported currencies for price tracking
+ */
+export enum Currency {
+  EUR = 'EUR',
+  USD = 'USD',
+  GBP = 'GBP',
+  CHF = 'CHF',
+}
+
 export interface ScraperResult {
   price: number;
-  currency: string;
+  currency: Currency;
   isAvailable: boolean;
   title?: string;
   imageUrl?: string;

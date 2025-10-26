@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { Scraper, ScraperResult } from '../interfaces/scraper.interface';
+import {
+  Scraper,
+  ScraperResult,
+  Currency,
+} from '../interfaces/scraper.interface';
 
 @Injectable()
 export class EbayScraper implements Scraper {
@@ -41,7 +45,7 @@ export class EbayScraper implements Scraper {
 
       // Estrai prezzo e valuta
       let price: number | null = null;
-      let currency = 'EUR'; // default fallback
+      let currency: Currency = Currency.EUR; // default fallback
       const priceSelectors = [
         '.x-price-primary .ux-textspans',
         '[itemprop="price"]',
@@ -54,13 +58,13 @@ export class EbayScraper implements Scraper {
         if (priceText) {
           // Estrai valuta dal testo del prezzo
           if (priceText.includes('€') || priceText.includes('EUR')) {
-            currency = 'EUR';
+            currency = Currency.EUR;
           } else if (priceText.includes('$') || priceText.includes('USD')) {
-            currency = 'USD';
+            currency = Currency.USD;
           } else if (priceText.includes('£') || priceText.includes('GBP')) {
-            currency = 'GBP';
+            currency = Currency.GBP;
           } else if (priceText.includes('CHF')) {
-            currency = 'CHF';
+            currency = Currency.CHF;
           }
 
           const priceMatch = priceText.match(/[\d.,]+/);

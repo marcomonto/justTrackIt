@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { Scraper, ScraperResult } from '../interfaces/scraper.interface';
+import {
+  Scraper,
+  ScraperResult,
+  Currency,
+} from '../interfaces/scraper.interface';
 
 @Injectable()
 export class GenericScraper implements Scraper {
@@ -83,7 +87,7 @@ export class GenericScraper implements Scraper {
 
       return {
         price,
-        currency: 'EUR',
+        currency: Currency.EUR,
         isAvailable: true, // Assume available if we found a price
         title,
         imageUrl,

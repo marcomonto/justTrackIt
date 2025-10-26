@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { Scraper, ScraperResult } from '../interfaces/scraper.interface';
+import {
+  Scraper,
+  ScraperResult,
+  Currency,
+} from '../interfaces/scraper.interface';
 
 @Injectable()
 export class AmazonScraper implements Scraper {
@@ -51,7 +55,7 @@ export class AmazonScraper implements Scraper {
 
       // Estrai prezzo e valuta (Amazon ha diversi selettori possibili)
       let price: number | null = null;
-      let currency = 'EUR'; // default fallback
+      let currency: Currency = Currency.EUR; // default fallback
       const priceSelectors = [
         '.a-price .a-offscreen',
         '#priceblock_ourprice',
@@ -65,13 +69,13 @@ export class AmazonScraper implements Scraper {
         if (priceText) {
           // Estrai valuta dal testo del prezzo
           if (priceText.includes('€')) {
-            currency = 'EUR';
+            currency = Currency.EUR;
           } else if (priceText.includes('$')) {
-            currency = 'USD';
+            currency = Currency.USD;
           } else if (priceText.includes('£')) {
-            currency = 'GBP';
+            currency = Currency.GBP;
           } else if (priceText.includes('CHF')) {
-            currency = 'CHF';
+            currency = Currency.CHF;
           }
 
           // Rimuovi simboli di valuta e converti
