@@ -9,7 +9,6 @@ import {
   Query,
   UseGuards,
   Request,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
@@ -23,7 +22,7 @@ export class AlertsController {
 
   @Post()
   create(
-    @Body(new ValidationPipe()) createAlertDto: CreateAlertDto,
+    @Body() createAlertDto: CreateAlertDto,
     @Request() req,
   ) {
     return this.alertsService.create(createAlertDto, req.user.id);
@@ -47,7 +46,7 @@ export class AlertsController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) updateAlertDto: UpdateAlertDto,
+    @Body() updateAlertDto: UpdateAlertDto,
     @Request() req,
   ) {
     return this.alertsService.update(id, updateAlertDto, req.user.id);

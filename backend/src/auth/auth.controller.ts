@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  ValidationPipe,
   Res,
   Get,
   UseGuards,
@@ -21,7 +20,7 @@ export class AuthController {
 
   @Post('register')
   async register(
-    @Body(new ValidationPipe()) registerDto: RegisterDto,
+    @Body() registerDto: RegisterDto,
     @Res({ passthrough: true }) response: Response,
   ) {
     const result = await this.authService.register(registerDto);
@@ -39,8 +38,8 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async login(
-    @Body(new ValidationPipe()) loginDto: LoginDto,
-    @Res({ passthrough: true }) response: Response,
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) response: Response
   ) {
     const result = await this.authService.login(loginDto);
 

@@ -9,7 +9,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 export class StoresService {
   constructor(
     @InjectRepository(Store)
-    private storeRepository: Repository<Store>,
+    private storeRepository: Repository<Store>
   ) {}
 
   async create(createStoreDto: CreateStoreDto) {
@@ -71,7 +71,7 @@ export class StoresService {
       const stores = await this.storeRepository.find({
         where: { isActive: true },
       });
-
+      console.log(stores)
       // Find store where domain contains hostname
       const store = stores.find((s) => s.domain && hostname.includes(s.domain));
 

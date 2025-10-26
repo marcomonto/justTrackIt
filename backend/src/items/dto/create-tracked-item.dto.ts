@@ -6,6 +6,10 @@ export class CreateTrackedItemDto {
 
   @IsOptional()
   @IsString()
+  name?: string; // If not provided, will use scraped title
+
+  @IsOptional()
+  @IsString()
   storeId?: string; // If not provided, will be auto-detected from URL
 
   @IsOptional()

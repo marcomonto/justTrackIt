@@ -123,99 +123,104 @@
     <div
       v-if="showAddModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      @click="showAddModal = false"
+      @click="closeModal"
     >
       <div
         class="bg-white rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
         @click.stop
       >
-        <h2 class="text-2xl font-bold text-black mb-6">Aggiungi Nuovo Item</h2>
+        <h2 class="text-2xl font-bold text-black mb-6">Traccia Nuovo Prodotto</h2>
         <form @submit.prevent="addItemHandler" class="space-y-4">
+          <!-- URL Input -->
           <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">Nome *</label>
+            <label class="block text-sm font-medium text-gray-900 mb-1">
+              URL Prodotto * <span class="text-xs text-gray-500">(Amazon, eBay, ecc.)</span>
+            </label>
             <input
-              v-model="newItem.name"
-              required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">Descrizione</label>
-            <textarea
-              v-model="newItem.description"
-              rows="3"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none"
-            ></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">URL Immagine</label>
-            <input
-              v-model="newItem.imageUrl"
+              v-model="productUrl"
               type="url"
+              required
+              placeholder="https://www.amazon.it/..."
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             />
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">Prezzo</label>
+          <!-- Loading Preview -->
+          <div v-if="isLoadingPreview" class="text-center py-4">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+            <p class="text-sm text-gray-600 mt-2">Caricamento preview...</p>
+          </div>
+
+          <!-- Preview Error -->
+          <div v-if="previewError" class="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p class="text-sm text-red-600">{{ previewError }}</p>
+          </div>
+
+          <!-- Preview Result -->
+          <div v-if="preview" class="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+            <div class="flex items-start gap-3">
+              <img
+                v-if="preview.product.imageUrl"
+                :src="preview.product.imageUrl"
+                alt="Product preview"
+                class="w-20 h-20 object-cover rounded"
+              />
+              <div class="flex-1">
+                <p class="text-xs text-gray-500">{{ preview.store.name }}</p>
+                <p class="font-medium text-black">{{ preview.product.title || 'Prodotto senza titolo' }}</p>
+                <p class="text-lg font-bold text-black">
+                  {{ preview.product.price.toFixed(2) }} {{ preview.product.currency }}
+                </p>
+                <span
+                  v-if="preview.product.isAvailable"
+                  class="inline-block text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full"
+                >
+                  Disponibile
+                </span>
+                <span
+                  v-else
+                  class="inline-block text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full"
+                >
+                  Non disponibile
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Name (Optional) -->
+          <div v-if="preview">
+            <label class="block text-sm font-medium text-gray-900 mb-1">
+              Nome personalizzato <span class="text-xs text-gray-500">(opzionale)</span>
+            </label>
             <input
-              v-model.number="newItem.price"
+              v-model="customName"
+              type="text"
+              :placeholder="preview.product.title || 'Lascia vuoto per usare il titolo rilevato'"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+            />
+          </div>
+
+          <!-- Target Price (Optional) -->
+          <div v-if="preview">
+            <label class="block text-sm font-medium text-gray-900 mb-1">
+              Prezzo target <span class="text-xs text-gray-500">(opzionale - per alert)</span>
+            </label>
+            <input
+              v-model.number="targetPrice"
               type="number"
               step="0.01"
+              :placeholder="`Es: ${(preview.product.price * 0.9).toFixed(2)}`"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             />
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">Link</label>
-            <input
-              v-model="newItem.link"
-              type="url"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-900 mb-1">Categoria</label>
-            <input
-              v-model="newItem.category"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-900 mb-1">Stato</label>
-              <select
-                v-model="newItem.status"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-              >
-                <option value="to_buy">Da Comprare</option>
-                <option value="wishlist">Wishlist</option>
-                <option value="purchased">Acquistato</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-900 mb-1">Priorità</label>
-              <select
-                v-model="newItem.priority"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-              >
-                <option value="normal">Normale</option>
-                <option value="urgent">Urgente</option>
-                <option value="low">Bassa</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
+          <!-- Notes (Optional) -->
+          <div v-if="preview">
             <label class="block text-sm font-medium text-gray-900 mb-1">Note</label>
             <textarea
-              v-model="newItem.notes"
+              v-model="notes"
               rows="2"
+              placeholder="Aggiungi note..."
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none"
             ></textarea>
           </div>
@@ -223,13 +228,14 @@
           <div class="flex gap-3 pt-4">
             <button
               type="submit"
-              class="flex-1 bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition"
+              :disabled="!preview || isLoadingPreview"
+              class="flex-1 bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              Aggiungi
+              Salva e Traccia
             </button>
             <button
               type="button"
-              @click="showAddModal = false"
+              @click="closeModal"
               class="flex-1 bg-gray-100 text-black py-3 rounded-lg font-medium hover:bg-gray-200 transition"
             >
               Annulla
@@ -242,21 +248,61 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useItemsStore } from '@/stores/items'
 import { useAuthStore } from '@/stores/auth'
-import type { CreateItemDto } from '@/types/item'
+import { trackedItemsApi } from '@/services/trackedItemsApi'
+import { useDebounce } from '@/composables/useDebounce'
+import type { PreviewItemResponse } from '@/types/tracked-item'
 
 const router = useRouter()
 const itemsStore = useItemsStore()
 const authStore = useAuthStore()
 const filter = ref('')
 const showAddModal = ref(false)
-const newItem = ref<CreateItemDto>({
-  name: '',
-  status: 'to_buy',
-  priority: 'normal',
+
+// Preview state
+const productUrl = ref('')
+const customName = ref('')
+const targetPrice = ref<number | undefined>()
+const notes = ref('')
+const preview = ref<PreviewItemResponse | null>(null)
+const isLoadingPreview = ref(false)
+const previewError = ref('')
+
+// Debounce URL input
+const debouncedUrl = useDebounce(productUrl, 800)
+
+// Watch debounced URL for preview
+watch(debouncedUrl, async (url) => {
+  if (!url || url.length < 10) {
+    preview.value = null
+    previewError.value = ''
+    return
+  }
+
+  // Basic URL validation
+  try {
+    new URL(url)
+  } catch {
+    preview.value = null
+    previewError.value = 'URL non valido'
+    return
+  }
+
+  // Fetch preview
+  isLoadingPreview.value = true
+  previewError.value = ''
+  try {
+    preview.value = await trackedItemsApi.preview({ productUrl: url })
+  } catch (error: any) {
+    console.error('Preview failed:', error)
+    previewError.value = error.response?.data?.message || 'Impossibile caricare il prodotto. Store non supportato o URL non valido.'
+    preview.value = null
+  } finally {
+    isLoadingPreview.value = false
+  }
 })
 
 const loadItems = () => {
@@ -264,17 +310,35 @@ const loadItems = () => {
 }
 
 const addItemHandler = async () => {
+  if (!preview.value) return
+
   try {
-    await itemsStore.addItem(newItem.value)
-    showAddModal.value = false
-    newItem.value = {
-      name: '',
-      status: 'to_buy',
-      priority: 'normal',
-    }
-  } catch (e) {
-    console.error('Failed to add item:', e)
+    await trackedItemsApi.create({
+      productUrl: productUrl.value,
+      name: customName.value || undefined,
+      targetPrice: targetPrice.value,
+      notes: notes.value || undefined,
+    })
+
+    // Reload items
+    loadItems()
+
+    // Close and reset modal
+    closeModal()
+  } catch (error: any) {
+    console.error('Failed to add item:', error)
+    previewError.value = error.response?.data?.message || 'Errore nel salvataggio del prodotto'
   }
+}
+
+const closeModal = () => {
+  showAddModal.value = false
+  productUrl.value = ''
+  customName.value = ''
+  targetPrice.value = undefined
+  notes.value = ''
+  preview.value = null
+  previewError.value = ''
 }
 
 const deleteItemHandler = async (id: number) => {
@@ -293,6 +357,8 @@ const statusLabel = (status: string) => {
     to_buy: 'Da Comprare',
     wishlist: 'Wishlist',
     purchased: 'Acquistato',
+    tracking: 'In Tracking',
+    paused: 'Pausato',
   }
   return labels[status] || status
 }

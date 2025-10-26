@@ -7,6 +7,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { CreateTrackedItemDto } from './dto/create-tracked-item.dto';
 import { UpdateTrackedItemDto } from './dto/update-tracked-item.dto';
+import { PreviewItemDto } from './dto/preview-item.dto';
 import { ScrapersService } from '../scrapers/scrapers.service';
 import { StoresService } from '../stores/stores.service';
 
@@ -53,6 +54,40 @@ export class ItemsService {
     return this.getTrackedItemsStats(userId);
   }
 
+  // ==================== PREVIEW (No save) ====================
+
+  async previewItem(dto: PreviewItemDto) {
+    const store = await this.storesService.getStoreFromUrl(dto.productUrl);
+    if (!store) {
+      throw new BadRequestException(
+        'Store not found or not supported for this URL',
+      );
+    }
+
+    // 2. Scrape product info without saving
+    const scrapedData = await this.scrapersService.scrapeProduct(
+      dto.productUrl,
+    );
+
+    // 3. Return preview data
+    return {
+      store: {
+        id: store.id,
+        name: store.name,
+        domain: store.domain,
+      },
+      product: {
+        title: scrapedData.title,
+        price: scrapedData.price,
+        currency: scrapedData.currency,
+        imageUrl: scrapedData.imageUrl,
+        sku: scrapedData.sku,
+        isAvailable: scrapedData.isAvailable,
+      },
+      url: dto.productUrl,
+    };
+  }
+
   // ==================== TRACKED ITEMS (Price Tracking) ====================
 
   async createTrackedItem(dto: CreateTrackedItemDto, userId: string) {
@@ -74,7 +109,7 @@ export class ItemsService {
     const trackedItem = this.trackedItemRepository.create({
       userId,
       storeId: store.id,
-      name: scrapedData.title || 'Unknown Product',
+      name: dto.name || scrapedData.title || 'Unknown Product',
       description: scrapedData.title,
       imageUrl: scrapedData.imageUrl,
       productUrl: dto.productUrl,

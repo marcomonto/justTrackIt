@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ValidationPipe,
   UseGuards,
   Request,
 } from '@nestjs/common';
@@ -16,6 +15,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { CreateTrackedItemDto } from './dto/create-tracked-item.dto';
 import { UpdateTrackedItemDto } from './dto/update-tracked-item.dto';
+import { PreviewItemDto } from './dto/preview-item.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('api/items')
@@ -24,7 +24,7 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createItemDto: CreateItemDto, @Request() req) {
+  create(@Body() createItemDto: CreateItemDto, @Request() req) {
     return this.itemsService.create(createItemDto, req.user.id);
   }
 
@@ -46,7 +46,7 @@ export class ItemsController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) updateItemDto: UpdateItemDto,
+    @Body() updateItemDto: UpdateItemDto,
     @Request() req,
   ) {
     return this.itemsService.update(id, updateItemDto, req.user.id);
@@ -57,11 +57,18 @@ export class ItemsController {
     return this.itemsService.remove(id, req.user.id);
   }
 
+  // ==================== PREVIEW ROUTE ====================
+
+  @Post('preview')
+  previewItem(@Body() dto: PreviewItemDto) {
+    return this.itemsService.previewItem(dto);
+  }
+
   // ==================== TRACKED ITEMS ROUTES ====================
 
   @Post('tracked')
   createTrackedItem(
-    @Body(new ValidationPipe()) dto: CreateTrackedItemDto,
+    @Body() dto: CreateTrackedItemDto,
     @Request() req,
   ) {
     return this.itemsService.createTrackedItem(dto, req.user.id);
@@ -98,7 +105,7 @@ export class ItemsController {
   @Patch('tracked/:id')
   updateTrackedItem(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) dto: UpdateTrackedItemDto,
+    @Body() dto: UpdateTrackedItemDto,
     @Request() req,
   ) {
     return this.itemsService.updateTrackedItem(id, dto, req.user.id);
