@@ -13,7 +13,14 @@ export class AmazonScraper implements Scraper {
   ];
 
   canHandle(url: string): boolean {
-    return url.includes('amazon.');
+    try {
+      const urlObj = new URL(url);
+      // Match amazon.* domains (amazon.it, amazon.com, amazon.co.uk, etc.)
+      // but not fake domains like famazon.it or amazon-fake.com
+      return /^(www\.)?amazon\.[a-z.]+$/i.test(urlObj.hostname);
+    } catch {
+      return false;
+    }
   }
 
   getStoreName(): string {
@@ -42,8 +49,9 @@ export class AmazonScraper implements Scraper {
 
       const $ = cheerio.load(data);
 
-      // Estrai prezzo (Amazon ha diversi selettori possibili)
+      // Estrai prezzo e valuta (Amazon ha diversi selettori possibili)
       let price: number | null = null;
+      let currency = 'EUR'; // default fallback
       const priceSelectors = [
         '.a-price .a-offscreen',
         '#priceblock_ourprice',
@@ -55,6 +63,17 @@ export class AmazonScraper implements Scraper {
       for (const selector of priceSelectors) {
         const priceText = $(selector).first().text().trim();
         if (priceText) {
+          // Estrai valuta dal testo del prezzo
+          if (priceText.includes('€')) {
+            currency = 'EUR';
+          } else if (priceText.includes('$')) {
+            currency = 'USD';
+          } else if (priceText.includes('£')) {
+            currency = 'GBP';
+          } else if (priceText.includes('CHF')) {
+            currency = 'CHF';
+          }
+
           // Rimuovi simboli di valuta e converti
           const priceMatch = priceText.match(/[\d.,]+/);
           if (priceMatch) {
@@ -96,7 +115,7 @@ export class AmazonScraper implements Scraper {
 
       return {
         price,
-        currency: 'EUR', // Può essere estratto dalla pagina se necessario
+        currency,
         isAvailable,
         title,
         imageUrl,

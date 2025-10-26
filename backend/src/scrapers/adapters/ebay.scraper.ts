@@ -8,7 +8,14 @@ export class EbayScraper implements Scraper {
   private readonly logger = new Logger(EbayScraper.name);
 
   canHandle(url: string): boolean {
-    return url.includes('ebay.');
+    try {
+      const urlObj = new URL(url);
+      // Match ebay.* domains (ebay.it, ebay.com, ebay.co.uk, etc.)
+      // but not fake domains like febay.it or ebay-fake.com
+      return /^(www\.)?ebay\.[a-z.]+$/i.test(urlObj.hostname);
+    } catch {
+      return false;
+    }
   }
 
   getStoreName(): string {
@@ -32,8 +39,9 @@ export class EbayScraper implements Scraper {
 
       const $ = cheerio.load(data);
 
-      // Estrai prezzo
+      // Estrai prezzo e valuta
       let price: number | null = null;
+      let currency = 'EUR'; // default fallback
       const priceSelectors = [
         '.x-price-primary .ux-textspans',
         '[itemprop="price"]',
@@ -44,6 +52,17 @@ export class EbayScraper implements Scraper {
       for (const selector of priceSelectors) {
         const priceText = $(selector).first().text().trim();
         if (priceText) {
+          // Estrai valuta dal testo del prezzo
+          if (priceText.includes('€') || priceText.includes('EUR')) {
+            currency = 'EUR';
+          } else if (priceText.includes('$') || priceText.includes('USD')) {
+            currency = 'USD';
+          } else if (priceText.includes('£') || priceText.includes('GBP')) {
+            currency = 'GBP';
+          } else if (priceText.includes('CHF')) {
+            currency = 'CHF';
+          }
+
           const priceMatch = priceText.match(/[\d.,]+/);
           if (priceMatch) {
             price = parseFloat(priceMatch[0].replace(',', '.'));
@@ -85,7 +104,7 @@ export class EbayScraper implements Scraper {
 
       return {
         price,
-        currency: 'EUR',
+        currency,
         isAvailable,
         title,
         imageUrl,
