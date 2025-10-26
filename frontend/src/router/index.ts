@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 import ItemsView from '../views/ItemsView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import StoresView from '../views/StoresView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +12,12 @@ const router = createRouter({
       path: '/',
       name: 'items',
       component: ItemsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/stores',
+      name: 'stores',
+      component: StoresView,
       meta: { requiresAuth: true },
     },
     {

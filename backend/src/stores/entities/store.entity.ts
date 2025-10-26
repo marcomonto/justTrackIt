@@ -13,6 +13,9 @@ export class Store extends BaseEntity {
   @Column({ nullable: true })
   logoUrl: string;
 
+  @Column({ nullable: true })
+  brandColor: string; // Hex color code (e.g., "#FF9900" for Amazon)
+
   @Column({ default: true })
   @Index()
   isActive: boolean;

@@ -1,22 +1,7 @@
 <template>
   <div class="min-h-screen bg-white">
     <!-- Header -->
-    <header class="border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-3xl font-bold text-black">JUST TRACK IT</h1>
-            <p class="text-gray-600 mt-1">Ciao, {{ authStore.user?.name }}</p>
-          </div>
-          <button
-            @click="handleLogout"
-            class="px-4 py-2 text-sm text-gray-600 hover:text-black transition"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-    </header>
+    <Navbar />
 
     <!-- Actions Bar -->
     <div class="border-b border-gray-200 bg-gray-50">
@@ -61,7 +46,12 @@
         <div
           v-for="item in itemsStore.items"
           :key="item.id"
-          class="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+          @click="openDetailModal(item)"
+          class="group bg-white border-2 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+          :style="{
+            borderColor: item.store?.brandColor || '#E5E7EB',
+            '--brand-color': item.store?.brandColor || '#E5E7EB'
+          }"
         >
           <!-- Image -->
           <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -76,8 +66,20 @@
 
           <!-- Content -->
           <div class="p-4">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-semibold text-black group-hover:underline">{{ item.name }}</h3>
+            <!-- Store Logo and Status -->
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex items-center gap-2">
+                <img
+                  v-if="item.store?.logoUrl"
+                  :src="item.store.logoUrl"
+                  :alt="item.store.name"
+                  class="h-5 w-auto object-contain"
+                  :title="item.store.name"
+                />
+                <span v-else-if="item.store?.name" class="text-xs text-gray-500">
+                  {{ item.store.name }}
+                </span>
+              </div>
               <span
                 :class="[
                   'text-xs px-2 py-1 rounded-full font-medium',
@@ -90,25 +92,43 @@
               </span>
             </div>
 
+            <!-- Product Name -->
+            <h3 class="font-semibold text-black group-hover:underline mb-2">{{ item.name }}</h3>
+
             <p v-if="item.description" class="text-sm text-gray-600 mb-2 line-clamp-2">
               {{ item.description }}
             </p>
 
-            <p v-if="item.price" class="text-lg font-bold text-black mb-3">
-              €{{ item.price.toFixed(2) }}
-            </p>
+            <div class="flex items-center justify-between mb-3">
+              <p v-if="item.currentPrice" class="text-lg font-bold text-black">
+                {{ item.currentPrice.toFixed(2) }} {{ item.currency }}
+              </p>
+              <span
+                v-if="item.currentPrice"
+                class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium"
+              >
+                Disponibile
+              </span>
+              <span
+                v-else
+                class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full font-medium"
+              >
+                Non disponibile
+              </span>
+            </div>
 
             <div class="flex gap-2">
               <a
-                v-if="item.link"
-                :href="item.link"
+                v-if="item.productUrl"
+                :href="item.productUrl"
                 target="_blank"
+                @click.stop
                 class="flex-1 text-center bg-gray-100 text-black px-3 py-2 rounded text-sm font-medium hover:bg-gray-200 transition"
               >
                 Apri Link
               </a>
               <button
-                @click="deleteItemHandler(item.id)"
+                @click.stop="deleteItemHandler(item.id)"
                 class="px-3 py-2 bg-red-50 text-red-600 rounded text-sm font-medium hover:bg-red-100 transition"
               >
                 Elimina
@@ -244,23 +264,208 @@
         </form>
       </div>
     </div>
+
+    <!-- Detail Item Modal -->
+    <div
+      v-if="showDetailModal && selectedItem"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click="closeDetailModal"
+    >
+      <div
+        class="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"
+        @click.stop
+      >
+        <!-- Header with Store Logo -->
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex items-center gap-3">
+            <img
+              v-if="selectedItem.store?.logoUrl"
+              :src="selectedItem.store.logoUrl"
+              :alt="selectedItem.store.name"
+              class="h-8 w-auto object-contain"
+            />
+            <div>
+              <h2 class="text-2xl font-bold text-black">{{ selectedItem.name }}</h2>
+              <p v-if="selectedItem.store?.name" class="text-sm text-gray-500">
+                {{ selectedItem.store.name }}
+              </p>
+            </div>
+          </div>
+          <button
+            @click="closeDetailModal"
+            class="text-gray-400 hover:text-gray-600 text-2xl"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Product Image -->
+        <div v-if="selectedItem.imageUrl" class="mb-6">
+          <img
+            :src="selectedItem.imageUrl"
+            :alt="selectedItem.name"
+            class="w-full max-h-96 object-contain rounded-lg bg-gray-50"
+          />
+        </div>
+
+        <!-- Details Grid -->
+        <div class="space-y-4">
+          <!-- Price and Availability -->
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p class="text-sm text-gray-600 mb-1">Prezzo Attuale</p>
+              <p class="text-2xl font-bold text-black">
+                {{ selectedItem.currentPrice?.toFixed(2) || 'N/A' }} {{ selectedItem.currency }}
+              </p>
+            </div>
+            <span
+              :class="[
+                'text-sm px-3 py-1.5 rounded-full font-medium',
+                selectedItem.currentPrice ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+              ]"
+            >
+              {{ selectedItem.currentPrice ? 'Disponibile' : 'Non disponibile' }}
+            </span>
+          </div>
+
+          <!-- Target Price -->
+          <div v-if="selectedItem.targetPrice" class="p-4 bg-blue-50 rounded-lg">
+            <p class="text-sm text-gray-600 mb-1">Prezzo Target</p>
+            <p class="text-xl font-bold text-blue-900">
+              {{ selectedItem.targetPrice.toFixed(2) }} {{ selectedItem.currency }}
+            </p>
+            <p v-if="selectedItem.currentPrice && selectedItem.currentPrice <= selectedItem.targetPrice" class="text-sm text-green-600 mt-2">
+              ✓ Prezzo target raggiunto!
+            </p>
+          </div>
+
+          <!-- Description -->
+          <div v-if="selectedItem.description">
+            <p class="text-sm font-medium text-gray-900 mb-2">Descrizione</p>
+            <p class="text-gray-600">{{ selectedItem.description }}</p>
+          </div>
+
+          <!-- Notes -->
+          <div v-if="selectedItem.notes">
+            <p class="text-sm font-medium text-gray-900 mb-2">Note</p>
+            <p class="text-gray-600">{{ selectedItem.notes }}</p>
+          </div>
+
+          <!-- SKU -->
+          <div v-if="selectedItem.sku" class="flex items-center gap-2">
+            <p class="text-sm text-gray-600">SKU:</p>
+            <p class="text-sm font-mono text-gray-900">{{ selectedItem.sku }}</p>
+          </div>
+
+          <!-- Tracking Status -->
+          <div class="flex items-center gap-2">
+            <p class="text-sm text-gray-600">Stato:</p>
+            <span
+              :class="[
+                'text-xs px-2 py-1 rounded-full font-medium',
+                selectedItem.status === 'tracking' ? 'bg-green-100 text-green-800' : '',
+                selectedItem.status === 'paused' ? 'bg-orange-100 text-orange-800' : '',
+                selectedItem.status === 'purchased' ? 'bg-blue-100 text-blue-800' : '',
+              ]"
+            >
+              {{ statusLabel(selectedItem.status) }}
+            </span>
+          </div>
+
+          <!-- Last Checked -->
+          <div v-if="selectedItem.lastCheckedAt" class="text-sm text-gray-500">
+            Ultimo controllo: {{ new Date(selectedItem.lastCheckedAt).toLocaleString('it-IT') }}
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+          <a
+            :href="selectedItem.productUrl"
+            target="_blank"
+            class="flex-1 text-center bg-black text-white px-4 py-3 rounded-lg font-medium hover:bg-gray-800 transition"
+          >
+            Vai al Prodotto
+          </a>
+          <button
+            @click="closeDetailModal"
+            class="px-4 py-3 bg-gray-100 text-black rounded-lg font-medium hover:bg-gray-200 transition"
+          >
+            Chiudi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Dialog -->
+    <ConfirmDialog
+      v-model="showDeleteDialog"
+      title="Elimina Item"
+      message="Questa azione non può essere annullata."
+      confirm-text="Elimina"
+      cancel-text="Annulla"
+      variant="danger"
+      @confirm="confirmDelete"
+    >
+      <!-- Item Preview in Dialog -->
+      <div v-if="itemToDeleteData" class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <div class="flex items-center gap-3">
+          <div class="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+            <img
+              v-if="itemToDeleteData.imageUrl"
+              :src="itemToDeleteData.imageUrl"
+              :alt="itemToDeleteData.name"
+              class="w-full h-full object-cover"
+            />
+            <div v-else class="w-full h-full flex items-center justify-center text-gray-400 text-2xl">
+              📦
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-900 truncate">{{ itemToDeleteData.name }}</p>
+            <p v-if="itemToDeleteData.currentPrice" class="text-sm text-gray-600">
+              {{ itemToDeleteData.currentPrice.toFixed(2) }} {{ itemToDeleteData.currency }}
+            </p>
+            <p v-if="itemToDeleteData.store?.name" class="text-xs text-gray-500">
+              {{ itemToDeleteData.store.name }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </ConfirmDialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useItemsStore } from '@/stores/items'
 import { useAuthStore } from '@/stores/auth'
 import { trackedItemsApi } from '@/services/trackedItemsApi'
 import { useDebounce } from '@/composables/useDebounce'
-import type { PreviewItemResponse } from '@/types/tracked-item'
+import type { PreviewItemResponse, TrackedItem } from '@/types/tracked-item'
+import Navbar from '@/components/Navbar.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 const itemsStore = useItemsStore()
 const authStore = useAuthStore()
 const filter = ref('')
 const showAddModal = ref(false)
+
+// Detail modal state
+const showDetailModal = ref(false)
+const selectedItem = ref<TrackedItem | null>(null)
+
+// Delete confirmation state
+const showDeleteDialog = ref(false)
+const itemToDelete = ref<string | null>(null)
+
+// Get item data for delete confirmation
+const itemToDeleteData = computed(() => {
+  if (!itemToDelete.value) return null
+  return itemsStore.items.find(item => item.id === itemToDelete.value) || null
+})
 
 // Preview state
 const productUrl = ref('')
@@ -341,15 +546,31 @@ const closeModal = () => {
   previewError.value = ''
 }
 
-const deleteItemHandler = async (id: number) => {
-  if (confirm('Sei sicuro di voler eliminare questo item?')) {
-    await itemsStore.deleteItem(id)
+const deleteItemHandler = (id: string) => {
+  itemToDelete.value = id
+  showDeleteDialog.value = true
+}
+
+const confirmDelete = async () => {
+  if (itemToDelete.value) {
+    await itemsStore.deleteItem(itemToDelete.value)
+    itemToDelete.value = null
   }
 }
 
 const handleLogout = async () => {
   await authStore.logout()
   router.push('/login')
+}
+
+const openDetailModal = (item: TrackedItem) => {
+  selectedItem.value = item
+  showDetailModal.value = true
+}
+
+const closeDetailModal = () => {
+  showDetailModal.value = false
+  selectedItem.value = null
 }
 
 const statusLabel = (status: string) => {

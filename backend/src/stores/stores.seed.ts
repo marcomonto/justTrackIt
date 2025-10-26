@@ -31,6 +31,7 @@ export class StoresSeedService implements OnModuleInit {
         name: 'Amazon',
         domain: 'amazon.*',
         logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+        brandColor: '#FF9900', // Amazon orange
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -38,7 +39,9 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'eBay',
         domain: 'ebay.*',
-        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg',
+        logoUrl:
+          'https://cdn.brandfetch.io/idU9zqzhO3/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1668435054810',
+        brandColor: '#E53238', // eBay red
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -46,7 +49,9 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'Lookfantastic',
         domain: 'lookfantastic.*',
-        logoUrl: 'https://www.lookfantastic.it/img/lookfantastic-logo.svg',
+        logoUrl:
+          'https://cdn.brandfetch.io/idmnTqUvxX/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1756265188113',
+        brandColor: '#1A1A1A', // Lookfantastic black
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -54,7 +59,8 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'Zalando',
         domain: 'zalando.*',
-        logoUrl: 'https://img01.ztat.net/nvg/zalando-logo.svg',
+        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/80/Zalando_logo.svg',
+        brandColor: '#FF6900', // Zalando orange
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -62,7 +68,9 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'Sephora',
         domain: 'sephora.*',
-        logoUrl: 'https://www.sephora.it/on/demandware.static/Sites-Sephora_IT-Site/-/default/dw7c3b8e3e/images/logo.svg',
+        logoUrl:
+          'https://cdn.brandfetch.io/idlz-76_gh/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1668413446337',
+        brandColor: '#000000', // Sephora black
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -70,7 +78,9 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'Pinalli',
         domain: 'pinalli.it',
-        logoUrl: 'https://www.pinalli.it/static/version1732722124/frontend/Pinalli/default/it_IT/images/logo.svg',
+        logoUrl:
+          'https://cdn.brandfetch.io/idVgzcbPXP/w/1875/h/1875/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1758433313279',
+        brandColor: '#D4AF37', // Pinalli gold
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,
@@ -78,7 +88,9 @@ export class StoresSeedService implements OnModuleInit {
       {
         name: 'Veralab',
         domain: 'veralab.it',
-        logoUrl: 'https://veralab.it/cdn/shop/files/VERALAB_LOGO_BLACK.svg',
+        logoUrl:
+          'https://cdn.brandfetch.io/idCVALM_Di/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1748342852848',
+        brandColor: '#2E7D32', // Veralab green
         isActive: true,
         scrapeType: 'html',
         minDelayMs: 5000,

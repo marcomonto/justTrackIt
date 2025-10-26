@@ -71,9 +71,21 @@ export class StoresService {
       const stores = await this.storeRepository.find({
         where: { isActive: true },
       });
-      console.log(stores)
-      // Find store where domain contains hostname
-      const store = stores.find((s) => s.domain && hostname.includes(s.domain));
+
+      // Find store by converting wildcard domains to regex patterns
+      // e.g., "amazon.*" becomes /^amazon\..+$/
+      const store = stores.find((s) => {
+        if (!s.domain) return false;
+
+        // Convert wildcard pattern to regex
+        // Escape dots and replace * with .+
+        const domainPattern = s.domain
+          .replace(/\./g, '\\.')  // Escape dots
+          .replace(/\*/g, '.+');  // Replace * with .+ (one or more chars)
+
+        const regex = new RegExp(`^${domainPattern}$`, 'i');
+        return regex.test(hostname);
+      });
 
       return store || null;
     } catch {
