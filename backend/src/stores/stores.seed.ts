@@ -59,6 +59,14 @@ export class StoresSeedService implements OnModuleInit {
         scrapeType: 'html',
         minDelayMs: 5000,
       },
+      {
+        name: 'Sephora',
+        domain: 'sephora.*',
+        logoUrl: 'https://www.sephora.it/on/demandware.static/Sites-Sephora_IT-Site/-/default/dw7c3b8e3e/images/logo.svg',
+        isActive: true,
+        scrapeType: 'html',
+        minDelayMs: 5000,
+      },
     ];
 
     for (const storeData of defaultStores) {
