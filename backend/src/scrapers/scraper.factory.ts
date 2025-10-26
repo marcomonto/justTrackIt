@@ -5,6 +5,7 @@ import { EbayScraper } from './adapters/ebay.scraper';
 import { LookfantasticScraper } from './adapters/lookfantastic.scraper';
 import { ZalandoScraper } from './adapters/zalando.scraper';
 import { SephoraScraper } from './adapters/sephora.scraper';
+import { PinalliScraper } from './adapters/pinalli.scraper';
 import { GenericScraper } from './adapters/generic.scraper';
 import { Scraper } from './interfaces/scraper.interface';
 
@@ -57,6 +58,11 @@ export class ScraperFactory {
       pattern: /^(www\.)?sephora\.[a-z.]+$/i,
       scraperClass: SephoraScraper,
       name: 'Sephora',
+    },
+    {
+      pattern: /^(www\.)?pinalli\.it$/i,
+      scraperClass: PinalliScraper,
+      name: 'Pinalli',
     },
   ];
 

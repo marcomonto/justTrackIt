@@ -67,6 +67,14 @@ export class StoresSeedService implements OnModuleInit {
         scrapeType: 'html',
         minDelayMs: 5000,
       },
+      {
+        name: 'Pinalli',
+        domain: 'pinalli.it',
+        logoUrl: 'https://www.pinalli.it/static/version1732722124/frontend/Pinalli/default/it_IT/images/logo.svg',
+        isActive: true,
+        scrapeType: 'html',
+        minDelayMs: 5000,
+      },
     ];
 
     for (const storeData of defaultStores) {
