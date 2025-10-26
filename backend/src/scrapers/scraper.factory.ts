@@ -6,6 +6,7 @@ import { LookfantasticScraper } from './adapters/lookfantastic.scraper';
 import { ZalandoScraper } from './adapters/zalando.scraper';
 import { SephoraScraper } from './adapters/sephora.scraper';
 import { PinalliScraper } from './adapters/pinalli.scraper';
+import { VeralabScraper } from './adapters/veralab.scraper';
 import { GenericScraper } from './adapters/generic.scraper';
 import { Scraper } from './interfaces/scraper.interface';
 
@@ -63,6 +64,11 @@ export class ScraperFactory {
       pattern: /^(www\.)?pinalli\.it$/i,
       scraperClass: PinalliScraper,
       name: 'Pinalli',
+    },
+    {
+      pattern: /^(www\.)?veralab\.it$/i,
+      scraperClass: VeralabScraper,
+      name: 'Veralab',
     },
   ];
 

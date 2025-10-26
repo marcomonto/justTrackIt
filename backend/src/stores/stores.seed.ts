@@ -75,6 +75,14 @@ export class StoresSeedService implements OnModuleInit {
         scrapeType: 'html',
         minDelayMs: 5000,
       },
+      {
+        name: 'Veralab',
+        domain: 'veralab.it',
+        logoUrl: 'https://veralab.it/cdn/shop/files/VERALAB_LOGO_BLACK.svg',
+        isActive: true,
+        scrapeType: 'html',
+        minDelayMs: 5000,
+      },
     ];
 
     for (const storeData of defaultStores) {

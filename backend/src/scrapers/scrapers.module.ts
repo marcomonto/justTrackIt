@@ -7,6 +7,7 @@ import { LookfantasticScraper } from './adapters/lookfantastic.scraper';
 import { ZalandoScraper } from './adapters/zalando.scraper';
 import { SephoraScraper } from './adapters/sephora.scraper';
 import { PinalliScraper } from './adapters/pinalli.scraper';
+import { VeralabScraper } from './adapters/veralab.scraper';
 import { GenericScraper } from './adapters/generic.scraper';
 
 @Module({
@@ -19,6 +20,7 @@ import { GenericScraper } from './adapters/generic.scraper';
     ZalandoScraper,
     SephoraScraper,
     PinalliScraper,
+    VeralabScraper,
     GenericScraper,
   ],
   exports: [ScrapersService],
