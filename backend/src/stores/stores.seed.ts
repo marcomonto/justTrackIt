@@ -51,6 +51,14 @@ export class StoresSeedService implements OnModuleInit {
         scrapeType: 'html',
         minDelayMs: 5000,
       },
+      {
+        name: 'Zalando',
+        domain: 'zalando.*',
+        logoUrl: 'https://img01.ztat.net/nvg/zalando-logo.svg',
+        isActive: true,
+        scrapeType: 'html',
+        minDelayMs: 5000,
+      },
     ];
 
     for (const storeData of defaultStores) {

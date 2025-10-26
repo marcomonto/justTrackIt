@@ -4,6 +4,7 @@ import { ScraperFactory } from './scraper.factory';
 import { AmazonScraper } from './adapters/amazon.scraper';
 import { EbayScraper } from './adapters/ebay.scraper';
 import { LookfantasticScraper } from './adapters/lookfantastic.scraper';
+import { ZalandoScraper } from './adapters/zalando.scraper';
 import { GenericScraper } from './adapters/generic.scraper';
 
 @Module({
@@ -13,6 +14,7 @@ import { GenericScraper } from './adapters/generic.scraper';
     AmazonScraper,
     EbayScraper,
     LookfantasticScraper,
+    ZalandoScraper,
     GenericScraper,
   ],
   exports: [ScrapersService],

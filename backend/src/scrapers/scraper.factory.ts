@@ -3,6 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { AmazonScraper } from './adapters/amazon.scraper';
 import { EbayScraper } from './adapters/ebay.scraper';
 import { LookfantasticScraper } from './adapters/lookfantastic.scraper';
+import { ZalandoScraper } from './adapters/zalando.scraper';
 import { GenericScraper } from './adapters/generic.scraper';
 import { Scraper } from './interfaces/scraper.interface';
 
@@ -45,6 +46,11 @@ export class ScraperFactory {
       pattern: /^(www\.)?lookfantastic\.[a-z.]+$/i,
       scraperClass: LookfantasticScraper,
       name: 'Lookfantastic',
+    },
+    {
+      pattern: /^(www\.)?zalando\.[a-z.]+$/i,
+      scraperClass: ZalandoScraper,
+      name: 'Zalando',
     },
   ];
 
