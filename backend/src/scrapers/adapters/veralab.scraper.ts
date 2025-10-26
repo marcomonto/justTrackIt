@@ -107,7 +107,7 @@ export class VeralabScraper implements Scraper {
         }
       });
 
-      // Fallback: try Shopify-specific selectors
+      // Fallback: try Shopify-specific and Remix selectors
       if (price === null) {
         const priceSelectors = [
           '.price-item--regular',
@@ -116,6 +116,9 @@ export class VeralabScraper implements Scraper {
           '.product__price',
           '.price',
           '[itemprop="price"]',
+          'span[class*="price"]',
+          'div[class*="price"]',
+          'p[class*="price"]',
         ];
 
         for (const selector of priceSelectors) {
@@ -145,6 +148,19 @@ export class VeralabScraper implements Scraper {
                 break;
               }
             }
+          }
+        }
+
+        // Last resort: search for price pattern in entire page text
+        if (price === null) {
+          const bodyText = $('body').text();
+          // Look for patterns like "26,00€" or "26.00€"
+          const pricePattern = /(\d+[.,]\d{2})\s*€/;
+          const match = bodyText.match(pricePattern);
+          if (match) {
+            price = parseFloat(match[1].replace(',', '.'));
+            currency = Currency.EUR;
+            this.logger.log(`Found price via text search: ${price}`);
           }
         }
       }
