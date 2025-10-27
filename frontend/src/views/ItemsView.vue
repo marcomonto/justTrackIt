@@ -11,7 +11,7 @@
             @click="showAddModal = true"
             class="bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition"
           >
-            + Aggiungi Item
+            + {{ $t('items.addItem') }}
           </button>
         </div>
       </div>
@@ -20,7 +20,7 @@
     <!-- Items Grid -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div v-if="itemsStore.loading" class="text-center py-12">
-        <p class="text-gray-600 dark:text-gray-400">Caricamento...</p>
+        <p class="text-gray-600 dark:text-gray-400">{{ $t('common.loading') }}</p>
       </div>
 
       <div v-else-if="itemsStore.error" class="text-center py-12">
@@ -28,7 +28,7 @@
       </div>
 
       <div v-else-if="itemsStore.items.length === 0" class="text-center py-12">
-        <p class="text-gray-600 dark:text-gray-400">Nessun item trovato. Aggiungine uno!</p>
+        <p class="text-gray-600 dark:text-gray-400">{{ $t('items.noItems') }}</p>
       </div>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -97,13 +97,13 @@
                 v-if="item.currentPrice"
                 class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full font-medium"
               >
-                Disponibile
+                {{ $t('items.available') }}
               </span>
               <span
                 v-else
                 class="text-xs px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-full font-medium"
               >
-                Non disponibile
+                {{ $t('items.notAvailable') }}
               </span>
             </div>
 
@@ -115,13 +115,13 @@
                 @click.stop
                 class="flex-1 text-center bg-gray-100 dark:bg-gray-700 text-black dark:text-white px-3 py-2 rounded text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               >
-                Apri Link
+                {{ $t('items.openLink') }}
               </a>
               <button
                 @click.stop="deleteItemHandler(item.id)"
                 class="px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/40 transition"
               >
-                Elimina
+                {{ $t('common.delete') }}
               </button>
             </div>
           </div>
@@ -139,18 +139,18 @@
         class="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
         @click.stop
       >
-        <h2 class="text-2xl font-bold text-black dark:text-white mb-6">Traccia Nuovo Prodotto</h2>
+        <h2 class="text-2xl font-bold text-black dark:text-white mb-6">{{ $t('items.addModal.title') }}</h2>
         <form @submit.prevent="addItemHandler" class="space-y-4">
           <!-- URL Input -->
           <div>
             <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
-              URL Prodotto * <span class="text-xs text-gray-500 dark:text-gray-400">(Amazon, eBay, ecc.)</span>
+              {{ $t('items.addModal.urlLabel') }} * <span class="text-xs text-gray-500 dark:text-gray-400">{{ $t('items.addModal.urlHelper') }}</span>
             </label>
             <input
               v-model="productUrl"
               type="url"
               required
-              placeholder="https://www.amazon.it/..."
+              :placeholder="$t('items.addModal.urlPlaceholder')"
               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
@@ -158,7 +158,7 @@
           <!-- Loading Preview -->
           <div v-if="isLoadingPreview" class="text-center py-4">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white"></div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Caricamento preview...</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ $t('items.addModal.loadingPreview') }}</p>
           </div>
 
           <!-- Preview Error -->
@@ -177,7 +177,7 @@
               />
               <div class="flex-1">
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ preview.store.name }}</p>
-                <p class="font-medium text-black dark:text-white">{{ preview.product.title || 'Prodotto senza titolo' }}</p>
+                <p class="font-medium text-black dark:text-white">{{ preview.product.title || $t('items.addModal.productWithoutTitle') }}</p>
                 <p class="text-lg font-bold text-black dark:text-white">
                   {{ preview.product.price.toFixed(2) }} {{ preview.product.currency }}
                 </p>
@@ -185,13 +185,13 @@
                   v-if="preview.product.isAvailable"
                   class="inline-block text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full"
                 >
-                  Disponibile
+                  {{ $t('items.available') }}
                 </span>
                 <span
                   v-else
                   class="inline-block text-xs px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-full"
                 >
-                  Non disponibile
+                  {{ $t('items.notAvailable') }}
                 </span>
               </div>
             </div>
@@ -200,12 +200,12 @@
           <!-- Custom Name (Optional) -->
           <div v-if="preview">
             <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
-              Nome personalizzato <span class="text-xs text-gray-500 dark:text-gray-400">(opzionale)</span>
+              {{ $t('items.addModal.customName') }} <span class="text-xs text-gray-500 dark:text-gray-400">{{ $t('items.addModal.customNameHelper') }}</span>
             </label>
             <input
               v-model="customName"
               type="text"
-              :placeholder="preview.product.title || 'Lascia vuoto per usare il titolo rilevato'"
+              :placeholder="preview.product.title || $t('items.addModal.customNamePlaceholder')"
               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
@@ -213,7 +213,7 @@
           <!-- Target Price (Optional) -->
           <div v-if="preview">
             <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
-              Prezzo target <span class="text-xs text-gray-500 dark:text-gray-400">(opzionale - per alert)</span>
+              {{ $t('items.addModal.targetPrice') }} <span class="text-xs text-gray-500 dark:text-gray-400">{{ $t('items.addModal.targetPriceHelper') }}</span>
             </label>
             <input
               v-model.number="targetPrice"
@@ -226,11 +226,11 @@
 
           <!-- Notes (Optional) -->
           <div v-if="preview">
-            <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Note</label>
+            <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">{{ $t('items.addModal.notes') }}</label>
             <textarea
               v-model="notes"
               rows="2"
-              placeholder="Aggiungi note..."
+              :placeholder="$t('items.addModal.notesPlaceholder')"
               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
             ></textarea>
           </div>
@@ -242,7 +242,7 @@
               class="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <div v-if="isSaving" class="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-white dark:border-black"></div>
-              <span>{{ isSaving ? 'Salvataggio...' : 'Salva e Traccia' }}</span>
+              <span>{{ isSaving ? $t('items.addModal.saving') : $t('items.addModal.saveButton') }}</span>
             </button>
             <button
               type="button"
@@ -250,7 +250,7 @@
               :disabled="isSaving"
               class="flex-1 bg-gray-100 dark:bg-gray-700 text-black dark:text-white py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Annulla
+              {{ $t('common.cancel') }}
             </button>
           </div>
         </form>
@@ -306,7 +306,7 @@
           <!-- Price and Availability -->
           <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Prezzo Attuale</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">{{ $t('items.detailModal.currentPrice') }}</p>
               <p class="text-2xl font-bold text-black dark:text-white">
                 {{ selectedItem.currentPrice?.toFixed(2) || 'N/A' }} {{ selectedItem.currency }}
               </p>
@@ -317,42 +317,42 @@
                 selectedItem.currentPrice ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400'
               ]"
             >
-              {{ selectedItem.currentPrice ? 'Disponibile' : 'Non disponibile' }}
+              {{ selectedItem.currentPrice ? $t('items.available') : $t('items.notAvailable') }}
             </span>
           </div>
 
           <!-- Target Price -->
           <div v-if="selectedItem.targetPrice" class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Prezzo Target</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">{{ $t('items.detailModal.targetPrice') }}</p>
             <p class="text-xl font-bold text-blue-900 dark:text-blue-400">
               {{ selectedItem.targetPrice.toFixed(2) }} {{ selectedItem.currency }}
             </p>
             <p v-if="selectedItem.currentPrice && selectedItem.currentPrice <= selectedItem.targetPrice" class="text-sm text-green-600 dark:text-green-400 mt-2">
-              ✓ Prezzo target raggiunto!
+              {{ $t('items.detailModal.targetReached') }}
             </p>
           </div>
 
           <!-- Description -->
           <div v-if="selectedItem.description">
-            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Descrizione</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{{ $t('items.detailModal.description') }}</p>
             <p class="text-gray-600 dark:text-gray-400">{{ selectedItem.description }}</p>
           </div>
 
           <!-- Notes -->
           <div v-if="selectedItem.notes">
-            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Note</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{{ $t('items.detailModal.notes') }}</p>
             <p class="text-gray-600 dark:text-gray-400">{{ selectedItem.notes }}</p>
           </div>
 
           <!-- SKU -->
           <div v-if="selectedItem.sku" class="flex items-center gap-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400">SKU:</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('items.detailModal.sku') }}</p>
             <p class="text-sm font-mono text-gray-900 dark:text-gray-100">{{ selectedItem.sku }}</p>
           </div>
 
           <!-- Tracking Status -->
           <div class="flex items-center gap-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400">Stato:</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('items.detailModal.status') }}</p>
             <span
               :class="[
                 'text-xs px-2 py-1 rounded-full font-medium',
@@ -367,7 +367,7 @@
 
           <!-- Last Checked -->
           <div v-if="selectedItem.lastCheckedAt" class="text-sm text-gray-500 dark:text-gray-400">
-            Ultimo controllo: {{ new Date(selectedItem.lastCheckedAt).toLocaleString('it-IT') }}
+            {{ $t('items.detailModal.lastCheck') }} {{ new Date(selectedItem.lastCheckedAt).toLocaleString('it-IT') }}
           </div>
         </div>
 
@@ -378,13 +378,13 @@
             target="_blank"
             class="flex-1 text-center bg-black dark:bg-white text-white dark:text-black px-4 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition"
           >
-            Vai al Prodotto
+            {{ $t('items.detailModal.goToProduct') }}
           </a>
           <button
             @click="closeDetailModal"
             class="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-black dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
           >
-            Chiudi
+            {{ $t('common.close') }}
           </button>
         </div>
       </div>
@@ -393,10 +393,10 @@
     <!-- Delete Confirmation Dialog -->
     <ConfirmDialog
       v-model="showDeleteDialog"
-      title="Elimina Item"
-      message="Questa azione non può essere annullata."
-      confirm-text="Elimina"
-      cancel-text="Annulla"
+      :title="$t('items.deleteDialog.title')"
+      :message="$t('items.deleteDialog.message')"
+      :confirm-text="$t('common.delete')"
+      :cancel-text="$t('common.cancel')"
       variant="danger"
       @confirm="confirmDelete"
     >
@@ -432,6 +432,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useItemsStore } from '@/stores/items'
 import { useAuthStore } from '@/stores/auth'
 import { trackedItemsApi } from '@/services/trackedItemsApi'
@@ -440,6 +441,7 @@ import type { PreviewItemResponse, TrackedItem } from '@/types/tracked-item'
 import Navbar from '@/components/Navbar.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
+const { t } = useI18n()
 const router = useRouter()
 const itemsStore = useItemsStore()
 const authStore = useAuthStore()
@@ -485,7 +487,7 @@ watch(debouncedUrl, async (url) => {
     new URL(url)
   } catch {
     preview.value = null
-    previewError.value = 'URL non valido'
+    previewError.value = t('items.errors.invalidUrl')
     return
   }
 
@@ -496,7 +498,7 @@ watch(debouncedUrl, async (url) => {
     preview.value = await trackedItemsApi.preview({ productUrl: url })
   } catch (error: any) {
     console.error('Preview failed:', error)
-    previewError.value = error.response?.data?.message || 'Impossibile caricare il prodotto. Store non supportato o URL non valido.'
+    previewError.value = error.response?.data?.message || t('items.errors.previewFailed')
     preview.value = null
   } finally {
     isLoadingPreview.value = false
@@ -528,7 +530,7 @@ const addItemHandler = async () => {
     closeModal()
   } catch (error: any) {
     console.error('Failed to add item:', error)
-    previewError.value = error.response?.data?.message || 'Errore nel salvataggio del prodotto'
+    previewError.value = error.response?.data?.message || t('items.errors.saveFailed')
   } finally {
     isSaving.value = false
   }
@@ -574,11 +576,11 @@ const closeDetailModal = () => {
 
 const statusLabel = (status: string) => {
   const labels: Record<string, string> = {
-    to_buy: 'Da Comprare',
-    wishlist: 'Wishlist',
-    purchased: 'Acquistato',
-    tracking: 'In Tracking',
-    paused: 'Pausato',
+    to_buy: t('items.status.toBuy'),
+    wishlist: t('items.status.wishlist'),
+    purchased: t('items.status.purchased'),
+    tracking: t('items.status.tracking'),
+    paused: t('items.status.paused'),
   }
   return labels[status] || status
 }

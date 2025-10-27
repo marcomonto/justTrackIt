@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-2xl sm:text-3xl font-bold text-black dark:text-white">JUST TRACK IT</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">Ciao, {{ authStore.user?.name }}</p>
+          <h1 class="text-2xl sm:text-3xl font-bold text-black dark:text-white">{{ $t('common.appName') }}</h1>
+          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">{{ $t('nav.hello', { name: authStore.user?.name }) }}</p>
         </div>
 
         <!-- Desktop Menu -->
@@ -20,7 +20,7 @@
                   : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'
               "
             >
-              I Miei Item
+              {{ $t('nav.myItems') }}
             </router-link>
             <router-link
               to="/stores"
@@ -31,7 +31,7 @@
                   : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'
               "
             >
-              Store Disponibili
+              {{ $t('nav.stores') }}
             </router-link>
           </nav>
 
@@ -61,12 +61,40 @@
             </svg>
           </button>
 
+          <!-- Language Toggle -->
+          <div class="flex items-center gap-1 border border-gray-200 dark:border-gray-700 rounded-lg p-1">
+            <button
+              @click="switchLocale('it')"
+              :class="[
+                'px-2 py-1 rounded text-xl transition',
+                localeStore.currentLocale === 'it'
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]"
+              aria-label="Italian"
+            >
+              🇮🇹
+            </button>
+            <button
+              @click="switchLocale('en')"
+              :class="[
+                'px-2 py-1 rounded text-xl transition',
+                localeStore.currentLocale === 'en'
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]"
+              aria-label="English"
+            >
+              🇬🇧
+            </button>
+          </div>
+
           <!-- Logout Button -->
           <button
             @click="handleLogout"
             class="px-4 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition"
           >
-            Logout
+            {{ $t('nav.logout') }}
           </button>
         </div>
 
@@ -112,7 +140,7 @@
               : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
           "
         >
-          I Miei Item
+          {{ $t('nav.myItems') }}
         </router-link>
         <router-link
           to="/stores"
@@ -124,13 +152,13 @@
               : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
           "
         >
-          Store Disponibili
+          {{ $t('nav.stores') }}
         </router-link>
         <button
           @click="themeStore.toggleTheme()"
           class="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
         >
-          <span>{{ themeStore.theme === 'light' ? 'Tema Scuro' : 'Tema Chiaro' }}</span>
+          <span>{{ themeStore.theme === 'light' ? $t('nav.darkMode') : $t('nav.lightMode') }}</span>
           <svg
             v-if="themeStore.theme === 'light'"
             class="w-5 h-5"
@@ -150,11 +178,40 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
           </svg>
         </button>
+        <div class="flex items-center gap-2 px-4">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('nav.language') }}:</span>
+          <div class="flex items-center gap-1 border border-gray-200 dark:border-gray-700 rounded-lg p-1">
+            <button
+              @click="switchLocale('it')"
+              :class="[
+                'px-2 py-1 rounded text-xl transition',
+                localeStore.currentLocale === 'it'
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]"
+              aria-label="Italian"
+            >
+              🇮🇹
+            </button>
+            <button
+              @click="switchLocale('en')"
+              :class="[
+                'px-2 py-1 rounded text-xl transition',
+                localeStore.currentLocale === 'en'
+                  ? 'bg-gray-200 dark:bg-gray-700'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]"
+              aria-label="English"
+            >
+              🇬🇧
+            </button>
+          </div>
+        </div>
         <button
           @click="handleLogout"
           class="w-full text-left px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
         >
-          Logout
+          {{ $t('nav.logout') }}
         </button>
       </div>
     </div>
@@ -165,12 +222,25 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
+import { useLocaleStore } from '@/stores/locale'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const localeStore = useLocaleStore()
 const router = useRouter()
 const mobileMenuOpen = ref(false)
+const { locale } = useI18n()
+
+// Initialize locale
+localeStore.initLocale()
+locale.value = localeStore.currentLocale
+
+const switchLocale = (newLocale: 'it' | 'en') => {
+  localeStore.setLocale(newLocale)
+  locale.value = newLocale
+}
 
 const handleLogout = async () => {
   await authStore.logout()

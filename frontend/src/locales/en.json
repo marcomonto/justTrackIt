@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "JUST TRACK IT",
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "nav": {
+    "myItems": "My Items",
+    "stores": "Available Stores",
+    "logout": "Logout",
+    "hello": "Hello, {name}",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "language": "Language"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "you@email.com",
+      "passwordPlaceholder": "••••••••",
+      "loginButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Sign Up"
+    },
+    "register": {
+      "title": "Create your account",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "you@email.com",
+      "passwordPlaceholder": "Minimum 6 characters",
+      "registerButton": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "login": "Sign In"
+    }
+  },
+  "items": {
+    "addItem": "Add Item",
+    "noItems": "No items found. Add one!",
+    "available": "Available",
+    "notAvailable": "Not Available",
+    "openLink": "Open Link",
+    "status": {
+      "toBuy": "To Buy",
+      "wishlist": "Wishlist",
+      "purchased": "Purchased",
+      "tracking": "Tracking",
+      "paused": "Paused"
+    },
+    "addModal": {
+      "title": "Track New Product",
+      "urlLabel": "Product URL",
+      "urlHelper": "(Amazon, eBay, etc.)",
+      "urlPlaceholder": "https://www.amazon.com/...",
+      "loadingPreview": "Loading preview...",
+      "customName": "Custom name",
+      "customNameHelper": "(optional)",
+      "customNamePlaceholder": "Leave empty to use detected title",
+      "targetPrice": "Target price",
+      "targetPriceHelper": "(optional - for alerts)",
+      "notes": "Notes",
+      "notesPlaceholder": "Add notes...",
+      "saveButton": "Save and Track",
+      "saving": "Saving...",
+      "productWithoutTitle": "Product without title"
+    },
+    "detailModal": {
+      "currentPrice": "Current Price",
+      "targetPrice": "Target Price",
+      "targetReached": "✓ Target price reached!",
+      "description": "Description",
+      "notes": "Notes",
+      "sku": "SKU:",
+      "status": "Status:",
+      "lastCheck": "Last check:",
+      "goToProduct": "Go to Product"
+    },
+    "deleteDialog": {
+      "title": "Delete Item",
+      "message": "This action cannot be undone."
+    },
+    "errors": {
+      "invalidUrl": "Invalid URL",
+      "previewFailed": "Unable to load product. Store not supported or invalid URL.",
+      "saveFailed": "Error saving product"
+    }
+  },
+  "stores": {
+    "title": "Available Stores",
+    "subtitle": "Here are all the stores supported by our platform for price tracking",
+    "noStores": "No stores available at the moment.",
+    "errorLoading": "Error loading stores. Please try again later."
+  }
+}

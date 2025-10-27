@@ -4,9 +4,9 @@
 
     <div class="container mx-auto px-4 py-8">
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Store Disponibili</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('stores.title') }}</h1>
         <p class="text-gray-600 dark:text-gray-400">
-          Ecco tutti gli store supportati dalla nostra piattaforma per il tracking dei prezzi
+          {{ $t('stores.subtitle') }}
         </p>
       </div>
 
@@ -61,7 +61,7 @@
         v-if="!loading && !error && stores.length === 0"
         class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg"
       >
-        <p class="text-gray-600 dark:text-gray-400">Nessuno store disponibile al momento.</p>
+        <p class="text-gray-600 dark:text-gray-400">{{ $t('stores.noStores') }}</p>
       </div>
     </div>
   </div>
@@ -69,9 +69,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { storesApi, type Store } from '@/services/storesApi'
 import Navbar from '@/components/Navbar.vue'
 
+const { t } = useI18n()
 const stores = ref<Store[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -83,7 +85,7 @@ const fetchStores = async () => {
     stores.value = await storesApi.getAll(true) // Get only active stores
   } catch (err) {
     console.error('Error fetching stores:', err)
-    error.value = 'Errore nel caricamento degli store. Riprova più tardi.'
+    error.value = t('stores.errorLoading')
   } finally {
     loading.value = false
   }

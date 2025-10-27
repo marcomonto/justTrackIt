@@ -2,8 +2,8 @@
   <div class="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4">
     <div class="max-w-md w-full space-y-8">
       <div>
-        <h2 class="text-4xl font-bold text-center text-black dark:text-white">JUST TRACK IT</h2>
-        <p class="mt-2 text-center text-gray-600 dark:text-gray-400">Crea il tuo account</p>
+        <h2 class="text-4xl font-bold text-center text-black dark:text-white">{{ $t('common.appName') }}</h2>
+        <p class="mt-2 text-center text-gray-600 dark:text-gray-400">{{ $t('auth.register.title') }}</p>
       </div>
 
       <form @submit.prevent="handleRegister" class="mt-8 space-y-6">
@@ -13,31 +13,31 @@
 
         <div class="space-y-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Nome</label>
+            <label for="name" class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $t('auth.register.name') }}</label>
             <input
               id="name"
               v-model="formData.name"
               type="text"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              placeholder="Il tuo nome"
+              :placeholder="$t('auth.register.namePlaceholder')"
             />
           </div>
 
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Email</label>
+            <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $t('auth.register.email') }}</label>
             <input
               id="email"
               v-model="formData.email"
               type="email"
               required
               class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              placeholder="tu@email.com"
+              :placeholder="$t('auth.register.emailPlaceholder')"
             />
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Password</label>
+            <label for="password" class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $t('auth.register.password') }}</label>
             <input
               id="password"
               v-model="formData.password"
@@ -45,7 +45,7 @@
               required
               minlength="6"
               class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              placeholder="Minimo 6 caratteri"
+              :placeholder="$t('auth.register.passwordPlaceholder')"
             />
           </div>
         </div>
@@ -55,13 +55,13 @@
           :disabled="authStore.loading"
           class="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-4 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ authStore.loading ? 'Caricamento...' : 'Registrati' }}
+          {{ authStore.loading ? $t('common.loading') : $t('auth.register.registerButton') }}
         </button>
 
         <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-          Hai già un account?
+          {{ $t('auth.register.hasAccount') }}
           <router-link to="/login" class="font-medium text-black dark:text-white hover:underline">
-            Accedi
+            {{ $t('auth.register.login') }}
           </router-link>
         </p>
       </form>

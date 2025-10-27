@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "JUST TRACK IT",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "back": "Indietro"
+  },
+  "nav": {
+    "myItems": "I Miei Item",
+    "stores": "Store Disponibili",
+    "logout": "Logout",
+    "hello": "Ciao, {name}",
+    "darkMode": "Tema Scuro",
+    "lightMode": "Tema Chiaro",
+    "language": "Lingua"
+  },
+  "auth": {
+    "login": {
+      "title": "Accedi al tuo account",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "tu@email.com",
+      "passwordPlaceholder": "••••••••",
+      "loginButton": "Accedi",
+      "noAccount": "Non hai un account?",
+      "register": "Registrati"
+    },
+    "register": {
+      "title": "Crea il tuo account",
+      "name": "Nome",
+      "email": "Email",
+      "password": "Password",
+      "namePlaceholder": "Il tuo nome",
+      "emailPlaceholder": "tu@email.com",
+      "passwordPlaceholder": "Minimo 6 caratteri",
+      "registerButton": "Registrati",
+      "hasAccount": "Hai già un account?",
+      "login": "Accedi"
+    }
+  },
+  "items": {
+    "addItem": "Aggiungi Item",
+    "noItems": "Nessun item trovato. Aggiungine uno!",
+    "available": "Disponibile",
+    "notAvailable": "Non disponibile",
+    "openLink": "Apri Link",
+    "status": {
+      "toBuy": "Da Comprare",
+      "wishlist": "Wishlist",
+      "purchased": "Acquistato",
+      "tracking": "In Tracking",
+      "paused": "Pausato"
+    },
+    "addModal": {
+      "title": "Traccia Nuovo Prodotto",
+      "urlLabel": "URL Prodotto",
+      "urlHelper": "(Amazon, eBay, ecc.)",
+      "urlPlaceholder": "https://www.amazon.it/...",
+      "loadingPreview": "Caricamento preview...",
+      "customName": "Nome personalizzato",
+      "customNameHelper": "(opzionale)",
+      "customNamePlaceholder": "Lascia vuoto per usare il titolo rilevato",
+      "targetPrice": "Prezzo target",
+      "targetPriceHelper": "(opzionale - per alert)",
+      "notes": "Note",
+      "notesPlaceholder": "Aggiungi note...",
+      "saveButton": "Salva e Traccia",
+      "saving": "Salvataggio...",
+      "productWithoutTitle": "Prodotto senza titolo"
+    },
+    "detailModal": {
+      "currentPrice": "Prezzo Attuale",
+      "targetPrice": "Prezzo Target",
+      "targetReached": "✓ Prezzo target raggiunto!",
+      "description": "Descrizione",
+      "notes": "Note",
+      "sku": "SKU:",
+      "status": "Stato:",
+      "lastCheck": "Ultimo controllo:",
+      "goToProduct": "Vai al Prodotto"
+    },
+    "deleteDialog": {
+      "title": "Elimina Item",
+      "message": "Questa azione non può essere annullata."
+    },
+    "errors": {
+      "invalidUrl": "URL non valido",
+      "previewFailed": "Impossibile caricare il prodotto. Store non supportato o URL non valido.",
+      "saveFailed": "Errore nel salvataggio del prodotto"
+    }
+  },
+  "stores": {
+    "title": "Store Disponibili",
+    "subtitle": "Ecco tutti gli store supportati dalla nostra piattaforma per il tracking dei prezzi",
+    "noStores": "Nessuno store disponibile al momento.",
+    "errorLoading": "Errore nel caricamento degli store. Riprova più tardi."
+  }
+}
