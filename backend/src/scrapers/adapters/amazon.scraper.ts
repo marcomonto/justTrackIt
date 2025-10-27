@@ -6,6 +6,7 @@ import {
   ScraperResult,
   Currency,
 } from '../interfaces/scraper.interface';
+import { parsePrice } from '../utils/price-parser.util';
 
 @Injectable()
 export class AmazonScraper implements Scraper {
@@ -81,9 +82,11 @@ export class AmazonScraper implements Scraper {
           // Rimuovi simboli di valuta e converti
           const priceMatch = priceText.match(/[\d.,]+/);
           if (priceMatch) {
-            price = parseFloat(priceMatch[0].replace(',', '.'));
-            if (!isNaN(price)) {
+            try {
+              price = parsePrice(priceMatch[0]);
               break;
+            } catch (error) {
+              this.logger.debug(`Failed to parse price: ${priceMatch[0]}`);
             }
           }
         }

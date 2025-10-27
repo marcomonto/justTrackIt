@@ -6,6 +6,7 @@ import {
   ScraperResult,
   Currency,
 } from '../interfaces/scraper.interface';
+import { parsePrice } from '../utils/price-parser.util';
 
 @Injectable()
 export class LookfantasticScraper implements Scraper {
@@ -142,9 +143,11 @@ export class LookfantasticScraper implements Scraper {
 
             const priceMatch = priceText.match(/[\d.,]+/);
             if (priceMatch) {
-              price = parseFloat(priceMatch[0].replace(',', '.'));
-              if (!isNaN(price)) {
+              try {
+                price = parsePrice(priceMatch[0]);
                 break;
+              } catch (error) {
+                this.logger.debug(`Failed to parse price: ${priceMatch[0]}`);
               }
             }
           }

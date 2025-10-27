@@ -6,6 +6,7 @@ import {
   ScraperResult,
   Currency,
 } from '../interfaces/scraper.interface';
+import { parsePrice } from '../utils/price-parser.util';
 
 @Injectable()
 export class VeralabScraper implements Scraper {
@@ -143,9 +144,11 @@ export class VeralabScraper implements Scraper {
             // Extract numeric price
             const priceMatch = priceText.match(/[\d.,]+/);
             if (priceMatch) {
-              price = parseFloat(priceMatch[0].replace(',', '.'));
-              if (!isNaN(price)) {
+              try {
+                price = parsePrice(priceMatch[0]);
                 break;
+              } catch (error) {
+                this.logger.debug(`Failed to parse price: ${priceMatch[0]}`);
               }
             }
           }
@@ -158,9 +161,13 @@ export class VeralabScraper implements Scraper {
           const pricePattern = /(\d+[.,]\d{2})\s*€/;
           const match = bodyText.match(pricePattern);
           if (match) {
-            price = parseFloat(match[1].replace(',', '.'));
-            currency = Currency.EUR;
-            this.logger.log(`Found price via text search: ${price}`);
+            try {
+              price = parsePrice(match[1]);
+              currency = Currency.EUR;
+              this.logger.log(`Found price via text search: ${price}`);
+            } catch (error) {
+              this.logger.debug(`Failed to parse price from text: ${match[1]}`);
+            }
           }
         }
       }

@@ -6,6 +6,7 @@ import {
   ScraperResult,
   Currency,
 } from '../interfaces/scraper.interface';
+import { parsePrice } from '../utils/price-parser.util';
 
 @Injectable()
 export class PinalliScraper implements Scraper {
@@ -83,7 +84,11 @@ export class PinalliScraper implements Scraper {
                     : item.offers;
 
                   if (offer.price) {
-                    price = parseFloat(offer.price);
+                    try {
+                      price = parsePrice(String(offer.price));
+                    } catch (error) {
+                      this.logger.debug(`Failed to parse price from JSON-LD: ${offer.price}`);
+                    }
                   }
 
                   if (offer.priceCurrency) {
@@ -141,9 +146,11 @@ export class PinalliScraper implements Scraper {
             // Extract numeric price
             const priceMatch = priceText.match(/[\d.,]+/);
             if (priceMatch) {
-              price = parseFloat(priceMatch[0].replace(',', '.'));
-              if (!isNaN(price)) {
+              try {
+                price = parsePrice(priceMatch[0]);
                 break;
+              } catch (error) {
+                this.logger.debug(`Failed to parse price: ${priceMatch[0]}`);
               }
             }
           }

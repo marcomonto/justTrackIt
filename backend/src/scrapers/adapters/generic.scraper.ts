@@ -6,6 +6,7 @@ import {
   ScraperResult,
   Currency,
 } from '../interfaces/scraper.interface';
+import { parsePrice } from '../utils/price-parser.util';
 
 @Injectable()
 export class GenericScraper implements Scraper {
@@ -56,10 +57,14 @@ export class GenericScraper implements Scraper {
           if (priceText) {
             const priceMatch = priceText.match(/[\d.,]+/);
             if (priceMatch) {
-              const parsedPrice = parseFloat(priceMatch[0].replace(',', '.'));
-              if (!isNaN(parsedPrice) && parsedPrice > 0) {
-                price = parsedPrice;
-                break;
+              try {
+                const parsedPrice = parsePrice(priceMatch[0]);
+                if (parsedPrice > 0) {
+                  price = parsedPrice;
+                  break;
+                }
+              } catch (error) {
+                this.logger.debug(`Failed to parse price: ${priceMatch[0]}`);
               }
             }
           }

@@ -6,24 +6,13 @@
     <!-- Actions Bar -->
     <div class="border-b border-gray-200 bg-gray-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex justify-center">
           <button
             @click="showAddModal = true"
-            class="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition"
+            class="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition"
           >
             + Aggiungi Item
           </button>
-
-          <select
-            v-model="filter"
-            @change="loadItems"
-            class="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-          >
-            <option value="">Tutti gli items</option>
-            <option value="to_buy">Da Comprare</option>
-            <option value="wishlist">Wishlist</option>
-            <option value="purchased">Acquistati</option>
-          </select>
         </div>
       </div>
     </div>
@@ -47,14 +36,14 @@
           v-for="item in itemsStore.items"
           :key="item.id"
           @click="openDetailModal(item)"
-          class="group bg-white border-2 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+          class="group bg-white border-2 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
           :style="{
             borderColor: item.store?.brandColor || '#E5E7EB',
             '--brand-color': item.store?.brandColor || '#E5E7EB'
           }"
         >
           <!-- Image -->
-          <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+          <div class="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
             <img
               v-if="item.imageUrl"
               :src="item.imageUrl"
@@ -65,7 +54,7 @@
           </div>
 
           <!-- Content -->
-          <div class="p-4">
+          <div class="p-4 flex flex-col flex-1">
             <!-- Store Logo and Status -->
             <div class="flex justify-between items-start mb-3">
               <div class="flex items-center gap-2">
@@ -93,13 +82,13 @@
             </div>
 
             <!-- Product Name -->
-            <h3 class="font-semibold text-black group-hover:underline mb-2">{{ item.name }}</h3>
+            <h3 class="font-semibold text-black group-hover:underline mb-2 line-clamp-2">{{ item.name }}</h3>
 
             <p v-if="item.description" class="text-sm text-gray-600 mb-2 line-clamp-2">
               {{ item.description }}
             </p>
 
-            <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center justify-between mb-3 mt-auto">
               <p v-if="item.currentPrice" class="text-lg font-bold text-black">
                 {{ item.currentPrice.toFixed(2) }} {{ item.currency }}
               </p>
@@ -143,7 +132,7 @@
     <div
       v-if="showAddModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      @click="closeModal"
+      @click="!isSaving && closeModal()"
     >
       <div
         class="bg-white rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
@@ -248,15 +237,17 @@
           <div class="flex gap-3 pt-4">
             <button
               type="submit"
-              :disabled="!preview || isLoadingPreview"
-              class="flex-1 bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              :disabled="!preview || isLoadingPreview || isSaving"
+              class="flex-1 bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Salva e Traccia
+              <div v-if="isSaving" class="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <span>{{ isSaving ? 'Salvataggio...' : 'Salva e Traccia' }}</span>
             </button>
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 bg-gray-100 text-black py-3 rounded-lg font-medium hover:bg-gray-200 transition"
+              :disabled="isSaving"
+              class="flex-1 bg-gray-100 text-black py-3 rounded-lg font-medium hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Annulla
             </button>
@@ -450,7 +441,6 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 const router = useRouter()
 const itemsStore = useItemsStore()
 const authStore = useAuthStore()
-const filter = ref('')
 const showAddModal = ref(false)
 
 // Detail modal state
@@ -474,6 +464,7 @@ const targetPrice = ref<number | undefined>()
 const notes = ref('')
 const preview = ref<PreviewItemResponse | null>(null)
 const isLoadingPreview = ref(false)
+const isSaving = ref(false)
 const previewError = ref('')
 
 // Debounce URL input
@@ -511,11 +502,14 @@ watch(debouncedUrl, async (url) => {
 })
 
 const loadItems = () => {
-  itemsStore.fetchItems(filter.value || undefined)
+  itemsStore.fetchItems()
 }
 
 const addItemHandler = async () => {
-  if (!preview.value) return
+  if (!preview.value || isSaving.value) return
+
+  isSaving.value = true
+  previewError.value = ''
 
   try {
     await trackedItemsApi.create({
@@ -533,6 +527,8 @@ const addItemHandler = async () => {
   } catch (error: any) {
     console.error('Failed to add item:', error)
     previewError.value = error.response?.data?.message || 'Errore nel salvataggio del prodotto'
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -544,6 +540,7 @@ const closeModal = () => {
   notes.value = ''
   preview.value = null
   previewError.value = ''
+  isSaving.value = false
 }
 
 const deleteItemHandler = (id: string) => {
