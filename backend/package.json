@@ -21,9 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node prisma/seed.ts"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "overrides": {
     "html-minifier": "npm:html-minifier-next@latest"
   },
