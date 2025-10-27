@@ -1,22 +1,22 @@
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-white dark:bg-gray-900">
     <Navbar />
 
     <div class="container mx-auto px-4 py-8">
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Store Disponibili</h1>
-        <p class="text-gray-600">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Store Disponibili</h1>
+        <p class="text-gray-600 dark:text-gray-400">
           Ecco tutti gli store supportati dalla nostra piattaforma per il tracking dei prezzi
         </p>
       </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+    <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400">
       <p>{{ error }}</p>
     </div>
 
@@ -25,14 +25,14 @@
       <div
         v-for="store in stores"
         :key="store.id"
-        class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border-l-4"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border-l-4"
         :style="{ borderLeftColor: store.brandColor || '#E5E7EB' }"
       >
         <div class="p-6 flex flex-col items-center justify-center text-center">
           <!-- Store Logo -->
           <div
             v-if="store.logoUrl"
-            class="w-24 h-24 flex items-center justify-center bg-gray-50 rounded-lg p-3 mb-4"
+            class="w-24 h-24 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4"
           >
             <img
               :src="store.logoUrl"
@@ -43,15 +43,15 @@
           </div>
           <div
             v-else
-            class="w-24 h-24 flex items-center justify-center bg-gray-200 rounded-lg mb-4"
+            class="w-24 h-24 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg mb-4"
           >
-            <span class="text-4xl font-bold text-gray-400">
+            <span class="text-4xl font-bold text-gray-400 dark:text-gray-500">
               {{ store.name.charAt(0) }}
             </span>
           </div>
 
           <!-- Store Name -->
-          <h2 class="text-xl font-semibold text-gray-900">{{ store.name }}</h2>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ store.name }}</h2>
         </div>
       </div>
     </div>
@@ -59,9 +59,9 @@
       <!-- Empty State -->
       <div
         v-if="!loading && !error && stores.length === 0"
-        class="text-center py-12 bg-gray-50 rounded-lg"
+        class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg"
       >
-        <p class="text-gray-600">Nessuno store disponibile al momento.</p>
+        <p class="text-gray-600 dark:text-gray-400">Nessuno store disponibile al momento.</p>
       </div>
     </div>
   </div>

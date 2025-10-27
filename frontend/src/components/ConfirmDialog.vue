@@ -3,27 +3,27 @@
     <Transition name="fade">
       <div
         v-if="isOpen"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 flex items-center justify-center z-50 p-4"
         @click="handleBackdropClick"
       >
         <Transition name="scale">
           <div
             v-if="isOpen"
-            class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl"
+            class="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full p-6 shadow-2xl"
             @click.stop
           >
             <!-- Icon -->
             <div
               class="w-12 h-12 rounded-full flex items-center justify-center mb-4"
               :class="{
-                'bg-red-100': variant === 'danger',
-                'bg-yellow-100': variant === 'warning',
-                'bg-blue-100': variant === 'info'
+                'bg-red-100 dark:bg-red-900/30': variant === 'danger',
+                'bg-yellow-100 dark:bg-yellow-900/30': variant === 'warning',
+                'bg-blue-100 dark:bg-blue-900/30': variant === 'info'
               }"
             >
               <svg
                 v-if="variant === 'danger'"
-                class="w-6 h-6 text-red-600"
+                class="w-6 h-6 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -37,7 +37,7 @@
               </svg>
               <svg
                 v-else-if="variant === 'warning'"
-                class="w-6 h-6 text-yellow-600"
+                class="w-6 h-6 text-yellow-600 dark:text-yellow-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -51,7 +51,7 @@
               </svg>
               <svg
                 v-else
-                class="w-6 h-6 text-blue-600"
+                class="w-6 h-6 text-blue-600 dark:text-blue-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -66,7 +66,7 @@
             </div>
 
             <!-- Title -->
-            <h3 class="text-xl font-bold text-gray-900 mb-2">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {{ title }}
             </h3>
 
@@ -76,7 +76,7 @@
             </div>
 
             <!-- Message -->
-            <p class="text-gray-600 mb-6">
+            <p class="text-gray-600 dark:text-gray-400 mb-6">
               {{ message }}
             </p>
 
@@ -84,7 +84,7 @@
             <div class="flex gap-3">
               <button
                 @click="handleCancel"
-                class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+                class="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               >
                 {{ cancelText }}
               </button>
@@ -92,9 +92,9 @@
                 @click="handleConfirm"
                 class="flex-1 px-4 py-3 rounded-lg font-medium transition"
                 :class="{
-                  'bg-red-600 text-white hover:bg-red-700': variant === 'danger',
-                  'bg-yellow-600 text-white hover:bg-yellow-700': variant === 'warning',
-                  'bg-blue-600 text-white hover:bg-blue-700': variant === 'info'
+                  'bg-red-600 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600': variant === 'danger',
+                  'bg-yellow-600 dark:bg-yellow-700 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600': variant === 'warning',
+                  'bg-blue-600 dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-600': variant === 'info'
                 }"
               >
                 {{ confirmText }}
