@@ -55,8 +55,8 @@
 
           <!-- Content -->
           <div class="p-4 flex flex-col flex-1">
-            <!-- Store Logo and Status -->
-            <div class="flex justify-between items-start mb-3">
+            <!-- Store Logo -->
+            <div class="flex items-start mb-3">
               <div class="flex items-center gap-2">
                 <div v-if="item.store?.logoUrl" class="bg-white dark:bg-white px-2 py-1 rounded">
                   <img
@@ -70,16 +70,6 @@
                   {{ item.store.name }}
                 </span>
               </div>
-              <span
-                :class="[
-                  'text-xs px-2 py-1 rounded-full font-medium',
-                  item.status === 'to_buy' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400' : '',
-                  item.status === 'wishlist' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' : '',
-                  item.status === 'purchased' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : '',
-                ]"
-              >
-                {{ statusLabel(item.status) }}
-              </span>
             </div>
 
             <!-- Product Name -->
@@ -350,21 +340,6 @@
             <p class="text-sm font-mono text-gray-900 dark:text-gray-100">{{ selectedItem.sku }}</p>
           </div>
 
-          <!-- Tracking Status -->
-          <div class="flex items-center gap-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('items.detailModal.status') }}</p>
-            <span
-              :class="[
-                'text-xs px-2 py-1 rounded-full font-medium',
-                selectedItem.status === 'tracking' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : '',
-                selectedItem.status === 'paused' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400' : '',
-                selectedItem.status === 'purchased' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' : '',
-              ]"
-            >
-              {{ statusLabel(selectedItem.status) }}
-            </span>
-          </div>
-
           <!-- Last Checked -->
           <div v-if="selectedItem.lastCheckedAt" class="text-sm text-gray-500 dark:text-gray-400">
             {{ $t('items.detailModal.lastCheck') }} {{ new Date(selectedItem.lastCheckedAt).toLocaleString('it-IT') }}
@@ -572,17 +547,6 @@ const openDetailModal = (item: TrackedItem) => {
 const closeDetailModal = () => {
   showDetailModal.value = false
   selectedItem.value = null
-}
-
-const statusLabel = (status: string) => {
-  const labels: Record<string, string> = {
-    to_buy: t('items.status.toBuy'),
-    wishlist: t('items.status.wishlist'),
-    purchased: t('items.status.purchased'),
-    tracking: t('items.status.tracking'),
-    paused: t('items.status.paused'),
-  }
-  return labels[status] || status
 }
 
 onMounted(async () => {

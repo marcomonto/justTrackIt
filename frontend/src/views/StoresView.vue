@@ -25,8 +25,9 @@
       <div
         v-for="store in stores"
         :key="store.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border-l-4"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border-l-4 cursor-pointer"
         :style="{ borderLeftColor: store.brandColor || '#E5E7EB' }"
+        @click="openStoreWebsite(store)"
       >
         <div class="p-6 flex flex-col items-center justify-center text-center">
           <!-- Store Logo -->
@@ -103,6 +104,70 @@ const formatDate = (dateString: string) => {
 const handleImageError = (event: Event) => {
   const target = event.target as HTMLImageElement
   target.style.display = 'none'
+}
+
+// Map browser locale to domain TLD
+const getLocaleTLD = (): string => {
+  const locale = navigator.language.toLowerCase()
+
+  // Map of locale codes to TLDs
+  const localeToTLD: Record<string, string> = {
+    'it': 'it',
+    'it-it': 'it',
+    'it-ch': 'it',
+    'en-us': 'com',
+    'en': 'com',
+    'en-gb': 'co.uk',
+    'en-au': 'com.au',
+    'en-ca': 'ca',
+    'de': 'de',
+    'de-de': 'de',
+    'de-at': 'de',
+    'de-ch': 'de',
+    'fr': 'fr',
+    'fr-fr': 'fr',
+    'fr-be': 'fr',
+    'fr-ch': 'fr',
+    'es': 'es',
+    'es-es': 'es',
+    'es-mx': 'com.mx',
+    'pt': 'com.br',
+    'pt-br': 'com.br',
+    'pt-pt': 'pt',
+    'nl': 'nl',
+    'nl-nl': 'nl',
+    'nl-be': 'nl',
+    'pl': 'pl',
+    'pl-pl': 'pl',
+    'ja': 'co.jp',
+    'ja-jp': 'co.jp',
+    'zh': 'cn',
+    'zh-cn': 'cn',
+  }
+
+  // Try exact match first, then language code only
+  const languageCode = locale.split('-')[0]
+  return localeToTLD[locale] || (languageCode ? localeToTLD[languageCode] : undefined) || 'com'
+}
+
+const resolveDomainWildcard = (domain: string): string => {
+  // If domain contains wildcard *, replace with locale-appropriate TLD
+  if (domain.includes('*')) {
+    const tld = getLocaleTLD()
+    return domain.replace('*', tld)
+  }
+  return domain
+}
+
+const openStoreWebsite = (store: Store) => {
+  if (store.domain) {
+    // Resolve wildcard if present
+    const resolvedDomain = resolveDomainWildcard(store.domain)
+
+    // Ensure the URL has a protocol
+    const url = resolvedDomain.startsWith('http') ? resolvedDomain : `https://${resolvedDomain}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 }
 
 onMounted(() => {

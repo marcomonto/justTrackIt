@@ -13,18 +13,6 @@
 
         <div class="space-y-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $t('auth.register.name') }}</label>
-            <input
-              id="name"
-              v-model="formData.name"
-              type="text"
-              required
-              class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              :placeholder="$t('auth.register.namePlaceholder')"
-            />
-          </div>
-
-          <div>
             <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ $t('auth.register.email') }}</label>
             <input
               id="email"
@@ -78,7 +66,6 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const formData = ref({
-  name: '',
   email: '',
   password: '',
 })

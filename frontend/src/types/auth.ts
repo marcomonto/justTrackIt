@@ -1,7 +1,7 @@
 export interface User {
   id: number
   email: string
-  name: string
+  name?: string
   createdAt: string
   updatedAt: string
 }
@@ -9,7 +9,6 @@ export interface User {
 export interface RegisterDto {
   email: string
   password: string
-  name: string
 }
 
 export interface LoginDto {

@@ -29,7 +29,6 @@ export class AuthService {
     const user = this.userRepository.create({
       email: registerDto.email,
       password: hashedPassword,
-      name: registerDto.name,
     });
 
     await this.userRepository.save(user);

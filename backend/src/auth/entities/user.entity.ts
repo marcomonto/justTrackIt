@@ -12,9 +12,6 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column()
-  name: string;
-
   @Column({ default: true })
   emailNotifications: boolean;
 
