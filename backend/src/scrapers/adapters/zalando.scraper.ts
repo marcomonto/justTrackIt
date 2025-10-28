@@ -26,6 +26,43 @@ export class ZalandoScraper implements Scraper {
     return 'Zalando';
   }
 
+  private getAcceptLanguage(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname.toLowerCase();
+
+      // Map domains to their respective Accept-Language headers
+      if (domain.includes('zalando.it')) {
+        return 'it-IT,it;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.com')) {
+        return 'en-US,en;q=0.9';
+      } else if (domain.includes('zalando.co.uk')) {
+        return 'en-GB,en;q=0.9';
+      } else if (domain.includes('zalando.de')) {
+        return 'de-DE,de;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.fr')) {
+        return 'fr-FR,fr;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.es')) {
+        return 'es-ES,es;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.nl')) {
+        return 'nl-NL,nl;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.pl')) {
+        return 'pl-PL,pl;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.at')) {
+        return 'de-AT,de;q=0.9,en;q=0.8';
+      } else if (domain.includes('zalando.ch')) {
+        return 'de-CH,de;q=0.9,fr;q=0.8,it;q=0.7,en;q=0.6';
+      } else if (domain.includes('zalando.be')) {
+        return 'nl-BE,nl;q=0.9,fr-BE;q=0.8,en;q=0.7';
+      }
+
+      // Default fallback to en-US
+      return 'en-US,en;q=0.9';
+    } catch {
+      return 'en-US,en;q=0.9';
+    }
+  }
+
   async scrape(url: string): Promise<ScraperResult> {
     try {
       this.logger.log(`Scraping Zalando product: ${url}`);
@@ -36,7 +73,7 @@ export class ZalandoScraper implements Scraper {
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
           Accept:
             'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Accept-Language': this.getAcceptLanguage(url),
           'Accept-Encoding': 'gzip, deflate, br',
           Connection: 'keep-alive',
           'Upgrade-Insecure-Requests': '1',

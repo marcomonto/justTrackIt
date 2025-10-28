@@ -98,6 +98,9 @@
     "title": "Store Disponibili",
     "subtitle": "Ecco tutti gli store supportati dalla nostra piattaforma per il tracking dei prezzi",
     "noStores": "Nessuno store disponibile al momento.",
-    "errorLoading": "Errore nel caricamento degli store. Riprova più tardi."
+    "errorLoading": "Errore nel caricamento degli store. Riprova più tardi.",
+    "searchPlaceholder": "Cerca store...",
+    "resultsFound": "{count} store trovato/i",
+    "noResultsFound": "Nessuno store trovato con la tua ricerca"
   }
 }

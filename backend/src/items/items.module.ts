@@ -3,13 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsService } from './items.service';
 import { ItemsController } from './items.controller';
 import { TrackedItem } from './entities/tracked-item.entity';
+import { UserTrackedItem } from './entities/user-tracked-item.entity';
 import { PriceHistory } from './entities/price-history.entity';
 import { ScrapersModule } from '../scrapers/scrapers.module';
 import { StoresModule } from '../stores/stores.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TrackedItem, PriceHistory]),
+    TypeOrmModule.forFeature([TrackedItem, UserTrackedItem, PriceHistory]),
     ScrapersModule,
     StoresModule,
   ],

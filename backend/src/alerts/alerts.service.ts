@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PriceAlert } from './entities/price-alert.entity';
 import { TrackedItem } from '../items/entities/tracked-item.entity';
+import { UserTrackedItem } from '../items/entities/user-tracked-item.entity';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { UpdateAlertDto } from './dto/update-alert.dto';
 
@@ -18,10 +19,12 @@ export class AlertsService {
     private alertRepository: Repository<PriceAlert>,
     @InjectRepository(TrackedItem)
     private trackedItemRepository: Repository<TrackedItem>,
+    @InjectRepository(UserTrackedItem)
+    private userTrackedItemRepository: Repository<UserTrackedItem>,
   ) {}
 
   async create(createAlertDto: CreateAlertDto, userId: string) {
-    // Verify item belongs to user
+    // Verify item exists
     const item = await this.trackedItemRepository.findOne({
       where: { id: createAlertDto.itemId },
     });
@@ -32,9 +35,17 @@ export class AlertsService {
       );
     }
 
-    if (item.userId !== userId) {
+    // Verify user is tracking this item
+    const userItem = await this.userTrackedItemRepository.findOne({
+      where: {
+        userId,
+        itemId: createAlertDto.itemId,
+      },
+    });
+
+    if (!userItem) {
       throw new ForbiddenException(
-        'You do not have permission to create alerts for this item',
+        'You do not have permission to create alerts for this item. You must be tracking it first.',
       );
     }
 
@@ -103,7 +114,7 @@ export class AlertsService {
   }
 
   async findByItem(itemId: string, userId: string) {
-    // Verify item belongs to user
+    // Verify item exists
     const item = await this.trackedItemRepository.findOne({
       where: { id: itemId },
     });
@@ -112,14 +123,22 @@ export class AlertsService {
       throw new NotFoundException(`Tracked item with ID ${itemId} not found`);
     }
 
-    if (item.userId !== userId) {
+    // Verify user is tracking this item
+    const userItem = await this.userTrackedItemRepository.findOne({
+      where: {
+        userId,
+        itemId,
+      },
+    });
+
+    if (!userItem) {
       throw new ForbiddenException(
         'You do not have permission to access alerts for this item',
       );
     }
 
     return this.alertRepository.find({
-      where: { itemId },
+      where: { itemId, userId },
       order: { createdAt: 'DESC' },
     });
   }

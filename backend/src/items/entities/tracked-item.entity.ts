@@ -7,17 +7,17 @@ import {
   Index,
 } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
-import { User } from '../../auth/entities/user.entity';
 import { Store } from '../../stores/entities/store.entity';
 import { PriceHistory } from './price-history.entity';
-import { PriceAlert } from '../../alerts/entities/price-alert.entity';
+import { UserTrackedItem } from './user-tracked-item.entity';
 
+/**
+ * TrackedItem: Represents a product that can be tracked by multiple users
+ * This entity stores shared product data (title, price, URL, etc.)
+ * User-specific data (targetPrice, notes, status) is stored in UserTrackedItem
+ */
 @Entity('tracked_items')
 export class TrackedItem extends BaseEntity {
-  @Column()
-  @Index()
-  userId: string;
-
   @Column()
   @Index()
   storeId: string;
@@ -31,7 +31,8 @@ export class TrackedItem extends BaseEntity {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @Column()
+  @Column({ unique: true })
+  @Index()
   productUrl: string;
 
   @Column({ nullable: true })
@@ -43,30 +44,16 @@ export class TrackedItem extends BaseEntity {
   @Column({ default: 'EUR' })
   currency: string;
 
-  @Column({ type: 'real', nullable: true })
-  targetPrice: number;
-
-  @Column({ default: true })
-  @Index()
-  isTracking: boolean;
-
   @Column({ type: 'datetime', nullable: true })
   lastCheckedAt: Date;
 
   @Column({ nullable: true })
   category: string;
 
-  @Column({ default: 'tracking' })
-  status: string; // "tracking", "paused", "purchased"
-
-  @Column({ type: 'text', nullable: true })
-  notes: string;
+  @Column({ default: true })
+  isAvailable: boolean;
 
   // Relations
-  @ManyToOne(() => User, (user) => user.trackedItems, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
-
   @ManyToOne(() => Store, (store) => store.trackedItems)
   @JoinColumn({ name: 'storeId' })
   store: Store;
@@ -74,14 +61,21 @@ export class TrackedItem extends BaseEntity {
   @OneToMany(() => PriceHistory, (history) => history.item)
   priceHistory: PriceHistory[];
 
-  @OneToMany(() => PriceAlert, (alert) => alert.item)
-  alerts: PriceAlert[];
+  @OneToMany(() => UserTrackedItem, (userItem) => userItem.item)
+  userTrackedItems: UserTrackedItem[];
 
   // ==================== BUSINESS LOGIC ====================
 
-  hasReachedTargetPrice(): boolean {
-    if (!this.currentPrice || !this.targetPrice) return false;
-    return this.currentPrice <= this.targetPrice;
+  updatePrice(newPrice: number, currency: string, isAvailable: boolean): void {
+    this.currentPrice = newPrice;
+    this.currency = currency;
+    this.isAvailable = isAvailable;
+    this.lastCheckedAt = new Date();
+  }
+
+  getFormattedPrice(): string {
+    if (!this.currentPrice) return 'N/A';
+    return `${this.currentPrice.toFixed(2)} ${this.currency}`;
   }
 
   calculateSavings(initialPrice: number): number {
@@ -93,35 +87,5 @@ export class TrackedItem extends BaseEntity {
     if (!this.currentPrice || initialPrice === 0) return 0;
     const savings = this.calculateSavings(initialPrice);
     return (savings / initialPrice) * 100;
-  }
-
-  isActiveTracking(): boolean {
-    return this.isTracking && this.status === 'tracking';
-  }
-
-  updatePrice(newPrice: number, currency: string): void {
-    this.currentPrice = newPrice;
-    this.currency = currency;
-    this.lastCheckedAt = new Date();
-  }
-
-  pauseTracking(): void {
-    this.isTracking = false;
-    this.status = 'paused';
-  }
-
-  resumeTracking(): void {
-    this.isTracking = true;
-    this.status = 'tracking';
-  }
-
-  markAsPurchased(): void {
-    this.isTracking = false;
-    this.status = 'purchased';
-  }
-
-  getFormattedPrice(): string {
-    if (!this.currentPrice) return 'N/A';
-    return `${this.currentPrice.toFixed(2)} ${this.currency}`;
   }
 }

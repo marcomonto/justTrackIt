@@ -32,6 +32,37 @@ export class AmazonScraper implements Scraper {
     return 'Amazon';
   }
 
+  private getAcceptLanguage(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname.toLowerCase();
+
+      // Map domains to their respective Accept-Language headers
+      if (domain.includes('amazon.it')) {
+        return 'it-IT,it;q=0.9,en;q=0.8';
+      } else if (domain.includes('amazon.com')) {
+        return 'en-US,en;q=0.9';
+      } else if (domain.includes('amazon.co.uk')) {
+        return 'en-GB,en;q=0.9';
+      } else if (domain.includes('amazon.de')) {
+        return 'de-DE,de;q=0.9,en;q=0.8';
+      } else if (domain.includes('amazon.fr')) {
+        return 'fr-FR,fr;q=0.9,en;q=0.8';
+      } else if (domain.includes('amazon.es')) {
+        return 'es-ES,es;q=0.9,en;q=0.8';
+      } else if (domain.includes('amazon.ca')) {
+        return 'en-CA,en;q=0.9,fr;q=0.8';
+      } else if (domain.includes('amazon.co.jp')) {
+        return 'ja-JP,ja;q=0.9,en;q=0.8';
+      }
+
+      // Default fallback to en-US
+      return 'en-US,en;q=0.9';
+    } catch {
+      return 'en-US,en;q=0.9';
+    }
+  }
+
   async scrape(url: string): Promise<ScraperResult> {
     try {
       this.logger.log(`Scraping Amazon product: ${url}`);
@@ -44,7 +75,7 @@ export class AmazonScraper implements Scraper {
           'User-Agent': randomUserAgent,
           Accept:
             'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Accept-Language': this.getAcceptLanguage(url),
           'Accept-Encoding': 'gzip, deflate, br',
           Connection: 'keep-alive',
           'Upgrade-Insecure-Requests': '1',
@@ -63,6 +94,11 @@ export class AmazonScraper implements Scraper {
         '#priceblock_dealprice',
         '.a-price-whole',
         '#corePrice_feature_div .a-offscreen',
+        '.a-price[data-a-color="price"] .a-offscreen',
+        'span.a-price-whole',
+        '.priceToPay .a-offscreen',
+        '#corePriceDisplay_desktop_feature_div .a-offscreen',
+        '.apexPriceToPay .a-offscreen',
       ];
 
       for (const selector of priceSelectors) {

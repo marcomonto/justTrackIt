@@ -98,6 +98,9 @@
     "title": "Available Stores",
     "subtitle": "Here are all the stores supported by our platform for price tracking",
     "noStores": "No stores available at the moment.",
-    "errorLoading": "Error loading stores. Please try again later."
+    "errorLoading": "Error loading stores. Please try again later.",
+    "searchPlaceholder": "Search stores...",
+    "resultsFound": "{count} store(s) found",
+    "noResultsFound": "No stores found matching your search"
   }
 }

@@ -26,6 +26,33 @@ export class LookfantasticScraper implements Scraper {
     return 'Lookfantastic';
   }
 
+  private getAcceptLanguage(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      const domain = urlObj.hostname.toLowerCase();
+
+      // Map domains to their respective Accept-Language headers
+      if (domain.includes('lookfantastic.it')) {
+        return 'it-IT,it;q=0.9,en;q=0.8';
+      } else if (domain.includes('lookfantastic.com')) {
+        return 'en-US,en;q=0.9';
+      } else if (domain.includes('lookfantastic.co.uk')) {
+        return 'en-GB,en;q=0.9';
+      } else if (domain.includes('lookfantastic.de')) {
+        return 'de-DE,de;q=0.9,en;q=0.8';
+      } else if (domain.includes('lookfantastic.fr')) {
+        return 'fr-FR,fr;q=0.9,en;q=0.8';
+      } else if (domain.includes('lookfantastic.es')) {
+        return 'es-ES,es;q=0.9,en;q=0.8';
+      }
+
+      // Default fallback to en-US
+      return 'en-US,en;q=0.9';
+    } catch {
+      return 'en-US,en;q=0.9';
+    }
+  }
+
   async scrape(url: string): Promise<ScraperResult> {
     try {
       this.logger.log(`Scraping Lookfantastic product: ${url}`);
@@ -36,7 +63,7 @@ export class LookfantasticScraper implements Scraper {
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
           Accept:
             'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Accept-Language': this.getAcceptLanguage(url),
         },
         timeout: 15000,
       });

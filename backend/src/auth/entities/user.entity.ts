@@ -1,6 +1,6 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
-import { TrackedItem } from '../../items/entities/tracked-item.entity';
+import { UserTrackedItem } from '../../items/entities/user-tracked-item.entity';
 import { PriceAlert } from '../../alerts/entities/price-alert.entity';
 import { Notification } from '../../notifications/entities/notification.entity';
 
@@ -16,8 +16,8 @@ export class User extends BaseEntity {
   emailNotifications: boolean;
 
   // Relations
-  @OneToMany(() => TrackedItem, (item) => item.user)
-  trackedItems: TrackedItem[];
+  @OneToMany(() => UserTrackedItem, (userItem) => userItem.user)
+  userTrackedItems: UserTrackedItem[];
 
   @OneToMany(() => PriceAlert, (alert) => alert.user)
   alerts: PriceAlert[];

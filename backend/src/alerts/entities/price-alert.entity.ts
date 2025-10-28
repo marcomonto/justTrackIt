@@ -41,7 +41,7 @@ export class PriceAlert extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => TrackedItem, (item) => item.alerts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TrackedItem, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'itemId' })
   item: TrackedItem;
 
