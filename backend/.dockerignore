@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+dist
+coverage
+.env
+.git
+.gitignore
+*.md
+test
+justtrack*.db
+*.db
+*.db-shm
+*.db-wal
+.DS_Store

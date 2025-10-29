@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: justtrackit-backend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for hot reload
+      - ./backend/src:/app/src
+      - ./backend/test:/app/test
+      # Persist database
+      - ./backend/justtrack-it.db:/app/justtrack-it.db
+      # Use named volumes for node_modules to avoid conflicts
+      - backend-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=sqlite:./justtrack-it.db
+      - JWT_SECRET=dev-secret-key-change-in-production
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USER=${MAIL_USER:-your-email@gmail.com}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-your-password}
+      - MAIL_FROM=noreply@justtrackit.com
+      - COOKIE_SECURE=false
+      - ENABLE_CORS=true
+    networks:
+      - justtrackit-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: justtrackit-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source code for hot reload
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      # Use named volumes for node_modules to avoid conflicts
+      - frontend-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    networks:
+      - justtrackit-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend-node-modules:
+  frontend-node-modules:
+
+networks:
+  justtrackit-network:
+    driver: bridge
